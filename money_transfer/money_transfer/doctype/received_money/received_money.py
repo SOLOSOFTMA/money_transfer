@@ -25,9 +25,11 @@ class ReceivedMoney(Document):
 		if self.received_agent == self.sender_user_id:
 			msgprint(_("You are not Authorise to Withdraw this transaction").format(self.mctn),
 					raise_exception=1)
-		if self.amount_received != self.total_denomination:
-			msgprint(_("Please make sure that Your Total Amount Paid = Total Denomination").format(self.total_denomination),
-					raise_exception=1)
+					
+		if frappe.db.get_value("Agents", self.received_agent, "teller_function") == "Teller & Till":
+			if self.amount_received != self.total_denomination:
+				msgprint(_("Please make sure that Your Total Amount Paid = Total Denomination").format(self.total_denomination),
+						raise_exception=1)
 		
 	def get_title(self):
 		return self.mctn
@@ -49,10 +51,10 @@ class ReceivedMoney(Document):
                 "party": self.receiver_name,
 				"account_currency": self.received_currency,
 				"credit": self.amount_received,
-                "remarks": "Test Send Money",
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
-				"against": "Cash in Till - T&T"
+				"against": "Cash in Till - T&T",
+				"remarks": "Withdraw Money Transaction"
             }))
 		gl_map.append(
             frappe._dict({
@@ -65,7 +67,7 @@ class ReceivedMoney(Document):
 				"voucher_no": self.name,
 				"party_type": "Customer",
 				"party": self.receiver_name,
-                "remarks": "Test Journal"
+                "remarks": "Withdraw Money Transaction"
             }))
 
 		if gl_map:

@@ -11,7 +11,8 @@ class Agents(Document):
 	def validate(self):
 		if not self.title:
 			self.title = self.get_title()
-		
+		if not self.agents:
+			self.agents = self.get_title()
 
 	def get_title(self):
-		return self.agents
+		return self.name

@@ -10,9 +10,9 @@ from frappe.model.document import Document
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
 
-class SendMoney(Document):
+class SendTT(Document):
 	def __init__(self, arg1, arg2=None):
-		super(SendMoney, self).__init__(arg1, arg2)
+		super(SendTT, self).__init__(arg1, arg2)
 	
 	def validate(self):
 		self.validate_sender_details()
@@ -27,13 +27,6 @@ class SendMoney(Document):
 	
 	def get_send_by(self):
 		return self.owner
-		
-		self.set_manual_mctn()
-	
-	def set_manual_mctn(self):
-		if self.manual_mctn and not self.mctn:
-			msgprint(_("Refrence # is Manadory").format(self.manual_mctn),
-					raise_exception=1)
 					
 	def on_submit(self):
 		self.make_gl_entries()

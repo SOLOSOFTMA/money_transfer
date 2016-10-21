@@ -1,8 +1,8 @@
-// Copyright (c) 2016, Frappe and contributors
+// Copyright (c) 2016, Caitlah Technology and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Send Money', {
-	
+frappe.ui.form.on('Send TT', {
+		
 	onload: function(frm) {
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
@@ -95,7 +95,7 @@ frappe.ui.form.on('Send Money', {
 		}
 
 		var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
-		frm.set_value("naming_series", MTCN_Value + "-");
+		frm.set_value("naming_series", MTCN_Value + "-" + "TT" + "-");
 	}
 	
 });
@@ -119,5 +119,5 @@ frappe.ui.form.on('Send Money', {
 	cur_frm.add_fetch('receiver_to','agent_account','receiver_agent_account');
 	cur_frm.add_fetch('receiver_to','agent_cost_center','receiver_cost_center');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
-
-
+	
+	cur_frm.add_fetch('person_lodge_application','customer_details','person_lodge_app_details');

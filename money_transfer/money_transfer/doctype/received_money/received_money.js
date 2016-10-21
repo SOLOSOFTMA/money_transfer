@@ -2,19 +2,62 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received Money', {
+
 	onload: function(frm) {
-		var today = get_today()
 		var Current_User = user;
-		frm.set_value("posting_date", today);
-		frm.set_value("received_agent", Current_User);
+		Teller_Function = frappe.db.get_value("Agents", Current_User, "teller_function");
+		if (Teller_Function != "Teller & Till"){
+			cur_frm.set_df_property("denomination_section", "hidden", true);
+			cur_frm.set_df_property("recalulate_total", "hidden", true);
+		}
+		if (frm.doc.docstatus != 1){
+			var today = get_today()
+			var Current_User = user;
+			frm.set_value("posting_date", today);
+			frm.set_value("received_agent", Current_User);
+
+			frm.set_query("mctn", function() {
+				return {
+					"filters": { "docstatus": ["=", 1],
+									 "receiver_to_location": frm.doc.user_location}
+				};
+			});
+		}
 		
-		frm.set_query("mctn", function() {
-			return {
-				"filters": { "docstatus": ["=", 1]}
-			};
-		});
+		
 	},
-	
+	refresh: function(frm) {
+		if (frm.doc.docstatus != 1){
+			var Current_User = user;
+			if (Current_User != "Administrator"){
+					frappe.call({
+						method:"frappe.client.get",
+						args: {
+							doctype:"User",
+							filters: {'email': Current_User
+							},
+						}, 
+						callback: function(r) { 
+							cur_frm.set_value("received_agent_name", r.message["full_name"]);
+						}
+					})
+				}
+				var Current_User = user;
+				frappe.call({
+					method:"frappe.client.get",
+						args: {
+								doctype:"Agents",
+								filters: {"agent_user": Current_User
+								},
+							}, 
+							callback: function(r) { 
+								cur_frm.set_value("user_location", r.message["agents_location"]);
+							}
+				})
+				
+		}
+
+	},
 	recalculate: function(frm) {		
 		var Total_P, Total_S=0.00
 		Total_P = frm.doc.total_p100 + frm.doc.total_p50 + frm.doc.total_p20 + frm.doc.total_p10 + frm.doc.total_p5 + frm.doc.total_p2 + frm.doc.total_p1;
@@ -65,17 +108,18 @@ frappe.ui.form.on('Received Money', {
 							
 							cur_frm.set_value("receiver_name", data.message["receiver_name"]);
 							cur_frm.set_value("receiver_details", data.message["receiver_details"]);
-							
+							cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);							
 				}
 			})
 	},
 	
 	p100: function(frm) {
 		frm.set_value("total_p100", flt(frm.doc.p100*100));
-		cur_frm.total_denomination();
+		
 	},
 	p50: function(frm) {
 		frm.set_value("total_p50", flt(frm.doc.p50*50));
+		
 	},
 	p20: function(frm) {
 		frm.set_value("total_p20", flt(frm.doc.p20*20));

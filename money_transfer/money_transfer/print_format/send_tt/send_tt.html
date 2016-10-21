@@ -1,0 +1,195 @@
+{%- from "templates/print_formats/standard_macros.html" import add_header -%}
+<!---------------------------------------------------->
+<div class="row">
+
+	<div class="col-xs-12">
+	<div class="panel panel-default">
+	 <div class="panel-body">
+			<div class="col-xs-2"><img src="/files/Logo.png" style="font-size: 14px; line-height: 1.42857;"></div>
+			<div class="col-xs-10"><h4>SKO BLDG Taufa'ahau Rd, Kolofo'ou, Nuku'alofa, TONGA</h4></div>
+			<div class="col-xs-6"><h6>Ph: 21480 | email : tnt@paluaviation.to</h6></div>
+	</div>
+	</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-6">
+	<div class="panel panel-default">
+		 <div class="panel-heading">Sender Details</div>
+		 <div class="panel-body">
+	{%- for label, value in (
+			(_("Name:"), doc.sender_name),
+			(_("Address"), doc.sender_details)
+		) -%}
+    <div class="row">
+			<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
+			<div class="col-xs-6">{{ value }}</div>	
+	</div>
+  {%- endfor -%}
+	</div>
+	</div>
+ </div>
+	<div class="col-xs-6">
+	<div class="panel panel-default">
+		 <div class="panel-heading">Beneficiary Name & Address</div>
+		 <div class="panel-body">
+   {%- for label, value in (
+        (_("Name :"), doc.receiver_name),
+		(_("Address"), doc.receiver_details)
+    ) -%}
+	<div class="row">
+			<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
+			<div class="col-xs-6">{{ value }}</div>
+	</div>
+    {%- endfor -%}
+	</div>
+		</div>
+	</div>
+</div>
+
+<!----------------------------------End Name & Address Details -------------------------------------------->
+<div class="row">
+	<div class="col-xs-6">
+	<div class="panel panel-default">
+		 <div class="panel-heading">Payment  Purpose and Method</div>
+		  <div class="panel-body">
+	 {%- for label, value in (
+		(_("Payment Purpose"), doc.purpose),
+		(_("Payment Method"), doc.payment_method),
+		(_("Payment Details"), doc.cheque_details)
+	 ) -%}
+		<div class="row">
+				<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
+				<div class="col-xs-6">{{ value }}</div>	
+		</div>
+	 {%- endfor -%}
+	</div>
+	</div>
+    </div>
+<!----------------------------------- break--------------------------------------------------------------->
+	<div class="col-xs-6">
+		<div class="panel panel-default">
+		 <div class="panel-heading">Beneficiary Account Details</div>
+		 <div class="panel-body">
+   {%- for label, value in (
+        (_("Bank Name"), doc.bank_name),
+		(_("Account #"), doc.account_number),
+		(_("BSB"), doc.bsb_number),
+		(_("SWIFT CODE"), doc.swift_code),
+		(_("Address"), doc.bank_address)
+    ) -%}
+	<div class="row">
+			<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
+			<div class="col-xs-6">{{ value }}</div>
+	</div>
+    {%- endfor -%}
+	</div>
+	</div>
+	</div>
+</div>
+<!----------------------------------End Payment Details -------------------------------------------->
+
+<div class="row">
+	<div class="col-xs-6">
+	<div class="panel panel-default">
+		 <div class="panel-heading">Amount Send Details</div>
+		  <div class="panel-body">
+	 {%- for label, value in (
+		(_("Currency"), doc.sender_currency),
+		(_("Amount Send"), doc.amount_send),
+		(_("Ex Rate"), doc.exchange_rate),
+		(_("Fees"), doc.fees_amount),
+	 ) -%}
+		<div class="row">
+				<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
+				<div class="col-xs-6">{{ value }}</div>	
+		</div>
+	 {%- endfor -%}
+	</div>
+	</div>
+	</div>
+<!----------------------------------- break--------------------------------------------------------------->
+	<div class="col-xs-6">
+	<div class="panel panel-default">
+		 <div class="panel-heading">Amount Received Details</div>
+		   <div class="panel-body">
+   {%- for label, value in (
+        (_("Currency"), doc.received_currency),
+		(_("Amount Received"), doc.amount_received)
+    ) -%}
+	<div class="row">
+			<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
+			<div class="col-xs-6">{{ value }}</div>
+	</div>
+    {%- endfor -%}
+	</div>	
+	</div>
+	</div>
+
+</div>
+<!----------------------------------End Payment Details -------------------------------------------->
+<div class="row">
+
+  
+	<div class="col-xs-12">
+	<div class="panel panel-default">
+		 <div class="panel-heading">TNT use only</div>
+	  <div class="panel-body">
+
+	<div class="row">
+			<div class="col-xs-5"><label class="text-right">MCTN</label></div>
+			<div class="col-xs-7">{{ doc.name }}</div>
+	</div>
+	<div class="row">		
+			<div class="col-xs-5"><label class="text-right">Date and Time</label></div>
+			<div class="col-xs-7">{{ frappe.utils.now_datetime().strftime('%d-%m-%Y : %H:%M') }}</div>
+	</div>
+	<div class="row">		
+			<div class="col-xs-5"><label class="text-right">Confirmation Received</label></div>
+			<div class="col-xs-7">_____________________</div>
+	</div>
+	<div class="row">		
+			<div class="col-xs-5"><label class="text-right">Created by</label></div>
+			<div class="col-xs-7">{{ doc.send_by }}</div>
+	</div>
+	<div class="row">		
+			<div class="col-xs-5"><label class="text-right">Checked by</label></div>
+			<div class="col-xs-7">{{ doc.modified_by }}</div>
+	</div>
+	<div class="row">		
+			<div class="col-xs-5"><label class="text-right">Payment Due Date</label></div>
+			<div class="col-xs-7">___________________</div>
+	</div>
+	</div>
+	  
+	
+	</div>
+
+ </div>
+</div>
+<br>
+<!----------------------------------End Payment Details -------------------------------------------->
+	<div class="row">
+		<div class="col-xs-12">
+				<div class="col-xs-5">{{ _("Customer Signature : ") }}</div>
+				<div class="col-xs-7">{{ _("_______________________________") }}</div>
+				<div class="col-xs-5"></div>
+				<div class="col-xs-7">{{ doc.sender_name }}</div>
+		</div>
+<div class="col-xs-12">
+<br>	
+<p class="small text-justify">Service transaction from T&T Money Transfer are to be send and received only in our Office in NZ, AUSTRALIA, 
+and Outer Island (eg. Eua, Haapai, Vavau). All Transfer are to be paid in cash or Online to our Account. 
+All OVERSEASE Transfer are to be confirm to account if Deposit before payout to customer. Customer Receiving 
+TT, must always provide a Government ID, MTCN Number, Know the Sender, and amount received. Customers must count
+their cash in front of the teller before departing from the office.
+International TT : Customer must provide government  ID, invoices for payment which it equal to overseas amount of 
+TT with the right account details for payment. Customer that do International TT are liable to collect further 
+document depend on type of payment. (e.g Imports- customer paper). Sending and Receiving large amount of cash: T&T 
+Money Transfer must confirm the large amount is deposit to account. T&T will process the TT in 24hours before payout.</p>
+<p class="small text-justify">
+Thank you for using  T&T Money Transfer. Please visit us again<br>
+T&T Money Transfer | Taufaahau Road, Sii Kae Ola Building | Ph : 21480 | email : tnt@paluaviationt.to</p>
+</div>
+</div>
