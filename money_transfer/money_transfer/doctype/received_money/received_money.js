@@ -2,14 +2,33 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received Money', {
+	
 
 	onload: function(frm) {
 		var Current_User = user;
-		Teller_Function = frappe.db.get_value("Agents", Current_User, "teller_function");
-		if (Teller_Function != "Teller & Till"){
-			cur_frm.set_df_property("denomination_section", "hidden", true);
-			cur_frm.set_df_property("recalulate_total", "hidden", true);
-		}
+
+		frappe.call({
+	//		var = teller;
+			method:"frappe.client.get",
+			args: {
+				doctype:"Agents",
+				filters: {'agent_user': Current_User
+				},
+			}, 
+			callback: function(r) { 
+			var teller = (r.message["teller_function"]);
+//			msgprint(teller);
+			if (teller != "Teller & Till"){
+				cur_frm.set_df_property("denomination_section", "hidden", true);
+				cur_frm.set_df_property("recalulate_total", "hidden", true);
+			} else if (teller == "Teller & Till"){
+				cur_frm.set_df_property("denomination_section", "hidden", false);
+				cur_frm.set_df_property("recalulate_total", "hidden", false);
+			}
+			}
+			})
+
+		
 		if (frm.doc.docstatus != 1){
 			var today = get_today()
 			var Current_User = user;
@@ -18,8 +37,10 @@ frappe.ui.form.on('Received Money', {
 
 			frm.set_query("mctn", function() {
 				return {
-					"filters": { "docstatus": ["=", 1],
-									 "receiver_to_location": frm.doc.user_location}
+					"filters": { 
+							"docstatus": ["=", 1],
+							"receiver_to_location": frm.doc.user_location
+					}
 				};
 			});
 		}
