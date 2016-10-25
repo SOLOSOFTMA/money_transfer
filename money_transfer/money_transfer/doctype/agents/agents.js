@@ -8,6 +8,7 @@ frappe.ui.form.on('Agents', {
 				"filters": { "country": ["=", frm.doc.agents_country]}
 			};
 			});
+		
 	},
 	
 	agents_country: function(frm) {

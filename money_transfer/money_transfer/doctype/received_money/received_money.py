@@ -28,7 +28,7 @@ class ReceivedMoney(Document):
 					raise_exception=1)
 	
 	def validate_Denomination(self):		
-		teller = frappe.get_doc("Agents", self.receiver_to)
+		teller = frappe.get_doc("Agents", self.receiver_agents)
 		if teller.teller_function == "Teller & Till":
 			if self.amount_received != self.total_denomination:
 				msgprint(_("Please make sure that Your Total Amount Paid = Total Denomination").format(self.total_denomination),
@@ -79,7 +79,7 @@ class ReceivedMoney(Document):
 	def make_trxn_entries(self):
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": self.receiver_to,
+					"user_id": self.received_agent,
 					"posting_date": self.withdraw_date,
 					"description": self.doctype,
 					"currency": self.received_currency,

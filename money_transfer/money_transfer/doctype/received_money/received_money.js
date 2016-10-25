@@ -16,6 +16,7 @@ frappe.ui.form.on('Received Money', {
 				},
 			}, 
 			callback: function(r) { 
+			frm.set_value("receiver_agents", r.message["name"]);
 			var teller = (r.message["teller_function"]);
 //			msgprint(teller);
 			if (teller != "Teller & Till"){
@@ -107,11 +108,11 @@ frappe.ui.form.on('Received Money', {
 							cur_frm.set_value("sender_agents", data.message["sender_agents"]);
 							cur_frm.set_value("sender_user_id", data.message["send_by"]);
 							
-							cur_frm.set_value("receiver_to", data.message["receiver_to"]);
-							cur_frm.set_value("receiver_to_country", data.message["receiver_to_country"]);
+			//				cur_frm.set_value("receiver_to", data.message["receiver_to"]);
+							cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
 							cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
 							cur_frm.set_value("received_currency", data.message["received_currency"]);
-							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
+//							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
 							
 							cur_frm.set_value("amount_send", data.message["amount_send"]);
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);

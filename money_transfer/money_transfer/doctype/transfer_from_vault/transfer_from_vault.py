@@ -18,9 +18,10 @@ class TransferfromVault(Document):
 		self.make_gl_entries()
 	
 	def make_trxn_entries_out(self):
+		userid = frappe.get_doc("Agents", self.transfer_from_vault)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": self.transfer_from_vault,
+					"user_id": userid.agent_user,
 					"posting_date": self.transfer_date,
 					"currency": "TOP",
 					"description": self.doctype,
@@ -31,9 +32,10 @@ class TransferfromVault(Document):
 		doc.submit()
 	
 	def make_trxn_entries_in(self):
+		userid = frappe.get_doc("Agents", self.transfer_to_agent)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": self.transfer_to_agent,
+					"user_id": userid.agent_user,
 					"posting_date": self.transfer_date,
 					"currency": "TOP",
 					"description": self.doctype,
