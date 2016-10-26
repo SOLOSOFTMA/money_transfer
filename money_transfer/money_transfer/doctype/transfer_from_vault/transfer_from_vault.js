@@ -7,6 +7,7 @@ frappe.ui.form.on('Transfer from Vault', {
 	},
 	
 	onload: function(frm) {
+	if (frm.doc.docstatus != 1){
 	  var today = get_today()
 	  frm.set_value("transfer_date", today);
 	  
@@ -30,7 +31,21 @@ frappe.ui.form.on('Transfer from Vault', {
 							callback: function (data) {
 								cur_frm.set_value("transfer_from_vault", data.message["name"]);
 					}
-				})
+				});
+//			frappe.call({
+//							"method": "frappe.client.get",
+//							args: {
+//								doctype: "Account",
+//								filters: {'account_name': " Cash in Vault - T&T"},
+								
+//							},
+//							callback: function (data) {
+//								total_debit = sum((data.message["debit"]));
+//								total_credit = sum((data.message["credit"]));
+//								cur_frm.set_value("vault_balance", flt(total_credit - total_debit));
+//					}
+//					});
+	  }
 	 } 
 	}
 });

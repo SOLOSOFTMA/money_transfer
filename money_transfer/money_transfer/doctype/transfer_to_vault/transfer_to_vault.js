@@ -7,6 +7,7 @@ frappe.ui.form.on('Transfer to Vault', {
 	},
 	
 	onload: function(frm) {
+	if (frm.doc.docstatus != 1){
 	  var today = get_today()
 	  frm.set_value("transfer_date", today);
 	  
@@ -45,5 +46,6 @@ frappe.ui.form.on('Transfer to Vault', {
 					}
 				})
 	 } 
+	}
 	}
 });
