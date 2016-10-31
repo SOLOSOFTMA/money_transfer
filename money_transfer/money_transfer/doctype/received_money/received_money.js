@@ -2,14 +2,34 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received Money', {
+	
 
 	onload: function(frm) {
 		var Current_User = user;
-		Teller_Function = frappe.db.get_value("Agents", Current_User, "teller_function");
-		if (Teller_Function != "Teller & Till"){
-			cur_frm.set_df_property("denomination_section", "hidden", true);
-			cur_frm.set_df_property("recalulate_total", "hidden", true);
-		}
+
+		frappe.call({
+	//		var = teller;
+			method:"frappe.client.get",
+			args: {
+				doctype:"Agents",
+				filters: {'agent_user': Current_User
+				},
+			}, 
+			callback: function(r) { 
+			frm.set_value("receiver_agents", r.message["name"]);
+			var teller = (r.message["teller_function"]);
+//			msgprint(teller);
+			if (teller != "Teller & Till"){
+				cur_frm.set_df_property("denomination_section", "hidden", true);
+				cur_frm.set_df_property("recalulate_total", "hidden", true);
+			} else if (teller == "Teller & Till"){
+				cur_frm.set_df_property("denomination_section", "hidden", false);
+				cur_frm.set_df_property("recalulate_total", "hidden", false);
+			}
+			}
+			})
+
+		
 		if (frm.doc.docstatus != 1){
 			var today = get_today()
 			var Current_User = user;
@@ -18,8 +38,10 @@ frappe.ui.form.on('Received Money', {
 
 			frm.set_query("mctn", function() {
 				return {
-					"filters": { "docstatus": ["=", 1],
-									 "receiver_to_location": frm.doc.user_location}
+					"filters": { 
+							"docstatus": ["=", 1],
+							"receiver_to_location": frm.doc.user_location
+					}
 				};
 			});
 		}
@@ -86,11 +108,11 @@ frappe.ui.form.on('Received Money', {
 							cur_frm.set_value("sender_agents", data.message["sender_agents"]);
 							cur_frm.set_value("sender_user_id", data.message["send_by"]);
 							
-							cur_frm.set_value("receiver_to", data.message["receiver_to"]);
-							cur_frm.set_value("receiver_to_country", data.message["receiver_to_country"]);
+			//				cur_frm.set_value("receiver_to", data.message["receiver_to"]);
+							cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
 							cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
 							cur_frm.set_value("received_currency", data.message["received_currency"]);
-							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
+//							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
 							
 							cur_frm.set_value("amount_send", data.message["amount_send"]);
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);

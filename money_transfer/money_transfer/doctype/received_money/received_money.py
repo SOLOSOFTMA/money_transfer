@@ -11,7 +11,7 @@ from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
 
 class ReceivedMoney(Document):
-
+	
 	def validate(self):
 		if not self.title:
 			self.title = self.get_title()
@@ -19,18 +19,21 @@ class ReceivedMoney(Document):
 			self.withdraw_date = self.posting_date
 		if not self.received_transaction_status:
 			self.received_transaction_status = 'Withdraw'
-		self.validate_Total_Denomination()
+		self.validate_Denomination()
+		self.validate_agent()
 	
-	def validate_Total_Denomination(self):
+	def validate_agent(self):
 		if self.received_agent == self.sender_user_id:
 			msgprint(_("You are not Authorise to Withdraw this transaction").format(self.mctn),
 					raise_exception=1)
-					
-		if frappe.db.get_value("Agents", self.received_agent, "teller_function") == "Teller & Till":
+	
+	def validate_Denomination(self):		
+		teller = frappe.get_doc("Agents", self.receiver_agents)
+		if teller.teller_function == "Teller & Till":
 			if self.amount_received != self.total_denomination:
 				msgprint(_("Please make sure that Your Total Amount Paid = Total Denomination").format(self.total_denomination),
 						raise_exception=1)
-		
+			
 	def get_title(self):
 		return self.mctn
 	
@@ -76,7 +79,7 @@ class ReceivedMoney(Document):
 	def make_trxn_entries(self):
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": self.receiver_to,
+					"user_id": self.received_agent,
 					"posting_date": self.withdraw_date,
 					"description": self.doctype,
 					"currency": self.received_currency,

@@ -156,7 +156,7 @@ class SendMoney(Document):
 	def make_trxn_entries(self):
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": self.sender_from,
+					"user_id": self.send_by,
 					"posting_date": self.posting_date,
 					"currency": self.sender_currency,
 					"description": self.doctype,

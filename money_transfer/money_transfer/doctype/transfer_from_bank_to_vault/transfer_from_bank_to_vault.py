@@ -5,9 +5,8 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from erpnext.controllers.accounts_controller import AccountsController
 
-class TransferfromVault(Document):
+class TransferfromBanktoVault(Document):
 	def validate(self):
 		if not self.title:
 			self.title = self.doctype
@@ -18,7 +17,7 @@ class TransferfromVault(Document):
 		self.make_gl_entries()
 	
 	def make_trxn_entries_out(self):
-		userid = frappe.get_doc("Agents", self.transfer_from_vault)
+		userid = frappe.get_doc("Agents", self.transfer_from_teller)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
 					"user_id": userid.agent_user,
@@ -32,7 +31,7 @@ class TransferfromVault(Document):
 		doc.submit()
 	
 	def make_trxn_entries_in(self):
-		userid = frappe.get_doc("Agents", self.transfer_to_agent)
+		userid = frappe.get_doc("Agents", self.transfer_to_vault)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
 					"user_id": userid.agent_user,

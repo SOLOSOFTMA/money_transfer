@@ -8,7 +8,7 @@ app_publisher = "Caitlah Technology"
 app_description = "App for Money Transfer Services"
 app_icon = "octicon octicon-markdown"
 app_color = "red"
-app_email = "sione.taumoepeau@gamil.com"
+app_email = "sione.taumoepeau@gmail.com"
 app_license = "MIT"
 
 # Includes in <head>

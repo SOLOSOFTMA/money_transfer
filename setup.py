@@ -17,7 +17,7 @@ setup(
 	version=version,
 	description='App for Money Transfer Services',
 	author='Sione Taumoepeau',
-	author_email='sione.taumoepeau@gamil.com',
+	author_email='sione.taumoepeau@gmail.com',
 	packages=find_packages(),
 	zip_safe=False,
 	include_package_data=True,
