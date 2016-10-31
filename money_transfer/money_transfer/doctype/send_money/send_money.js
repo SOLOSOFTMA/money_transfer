@@ -112,7 +112,7 @@ frappe.ui.form.on('Send Money', {
 					callback: function (data) {
 					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
 					if (frm.doc.sender_city_code == frm.doc.receiver_city_code){
-						msgprint("You are not only allowed to Send and Received Money on the same Agent");
+						msgprint("You are not allowed to Send and Received Money on the same Agent");
 						frm.set_value("receiver_city_code", "");
 					}else if (frm.doc.sender_city_code != frm.doc.receiver_city_code){
 						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
