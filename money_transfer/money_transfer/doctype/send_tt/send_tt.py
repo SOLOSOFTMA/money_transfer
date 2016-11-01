@@ -32,7 +32,6 @@ class SendTT(Document):
 		self.make_gl_entries()
 		self.make_trxn_entries()
 		
-		
 	def get_title(self):
 		return self.sender_name
 		
@@ -142,7 +141,6 @@ class SendTT(Document):
 					"remarks": "Fees"
 				})
 			)
-			
 		if gl_map:
 			make_gl_entries(gl_map, cancel=(self.docstatus == 2))
 			

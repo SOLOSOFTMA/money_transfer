@@ -9,12 +9,20 @@ import MySQLdb
 
 class EOD(Document):
 	
+	def validate(self):
+		self.check_eod_Maintenance()
+	
 	def submit(self):
 		self.save_to_temp_table()
 		self.insert_record()
 		self.empty_transactions()
 		self.insert_Opening_Bal()
 		self.empty_temp_table()
+		self.update_posting_date()
+		
+	def check_eod_Maintenance(self):
+		if not eod_check:
+			msgprint(_("Please make sure EOD Maintenance is Check"))
 			
 	def save_to_temp_table(self):	
 		frappe.db.sql("""insert into `tabTemp` (user_id, currency, posting_date, inflow) select
@@ -34,4 +42,7 @@ class EOD(Document):
 		currency, posting_date, inflow, description from `tabTemp`""")
 		
 	def empty_temp_table(self):	
-		frappe.db.sql("""delete from `tabTemp`""")                                                        
+		frappe.db.sql("""delete from `tabTemp`""")
+	
+	def update_posting_date(self):
+		frappe.db.sql("""Update `tabTransactions Details` set posting_date = %s""", self.eod_nextday)

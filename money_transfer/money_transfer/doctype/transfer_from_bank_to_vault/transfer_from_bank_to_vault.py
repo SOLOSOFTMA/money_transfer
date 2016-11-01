@@ -12,29 +12,13 @@ class TransferfromBanktoVault(Document):
 			self.title = self.doctype
 	
 	def on_submit(self):
-		self.make_trxn_entries_out()
 		self.make_trxn_entries_in()
 		self.make_gl_entries()
-	
-	def make_trxn_entries_out(self):
-		userid = frappe.get_doc("Agents", self.transfer_from_teller)
-		doc = frappe.new_doc("Transactions Details")
-		doc.update({
-					"user_id": userid.agent_user,
-					"posting_date": self.transfer_date,
-					"currency": "TOP",
-					"description": self.doctype,
-					"outflow": self.transfer_amount,
-					"mctn": self.name
-				})
-		doc.insert()
-		doc.submit()
-	
+		
 	def make_trxn_entries_in(self):
-		userid = frappe.get_doc("Agents", self.transfer_to_vault)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": userid.agent_user,
+					"user_id": frappe.session.user,
 					"posting_date": self.transfer_date,
 					"currency": "TOP",
 					"description": self.doctype,
@@ -52,23 +36,23 @@ class TransferfromBanktoVault(Document):
             frappe._dict({
 				"posting_date": self.transfer_date,
 				"transaction_date": self.transfer_date,
-                "account": "Cash in Till - T&T",
+                "account": self.transfer_from_bank,
 				"credit": self.transfer_amount,
-                "remarks": "Transfer from Vault to Teller",
+                "remarks": "Transfer from Bank to Vault",
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
-				"against": "Cash in Vault - T&T"
+				"against": self.transfer_to_vault
             }))
 		gl_map.append(
             frappe._dict({
                 "posting_date": self.transfer_date,
 				"transaction_date": self.transfer_date,
-                "account": "Cash in Vault - T&T",
+                "account": self.transfer_to_vault,
 				"debit": self.transfer_amount,
-                "remarks": "Transfer from Vault to Teller",
+                "remarks": "Transfer from Bank to Vault",
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
-				"against": "Cash in Till - T&T"
+				"against": self.transfer_from_bank
             }))
 
 		if gl_map:
