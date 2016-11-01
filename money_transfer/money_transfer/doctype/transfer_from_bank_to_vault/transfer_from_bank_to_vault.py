@@ -36,7 +36,7 @@ class TransferfromBanktoVault(Document):
             frappe._dict({
 				"posting_date": self.transfer_date,
 				"transaction_date": self.transfer_date,
-                "account": self.transfer_from_bank,
+                "account": self.transfer_to_vault,
 				"credit": self.transfer_amount,
                 "remarks": "Transfer from Bank to Vault",
 				"voucher_type": self.doctype,
@@ -47,7 +47,7 @@ class TransferfromBanktoVault(Document):
             frappe._dict({
                 "posting_date": self.transfer_date,
 				"transaction_date": self.transfer_date,
-                "account": self.transfer_to_vault,
+				"account": self.transfer_from_bank,
 				"debit": self.transfer_amount,
                 "remarks": "Transfer from Bank to Vault",
 				"voucher_type": self.doctype,

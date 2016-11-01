@@ -58,35 +58,37 @@ class SendTT(Document):
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries	
 		
+		
 		gl_map = []
-		gl_map.append(
-            frappe._dict({
-				"posting_date": self.posting_date,
-				"transaction_date": self.posting_date,
-                "account": self.sender_agents_account,
-                "party_type": "Customer",
-                "party": self.sender_name,
-				"account_currency": self.sender_currency,
-				"debit_in_account_currency": self.amount_send,
-				"debit": self.amount_received,
-				"voucher_type": self.doctype,
-				"voucher_no": self.name,
-				"against": "Cash in Vault - T&T",
-				"remarks": "Send Money Transaction"
-            }))
-			
-		gl_map.append(
-            frappe._dict({
-                "account": "Cash in Till - T&T",
-				"against": self.sender_agents_account,
-				"posting_date": self.posting_date,
-				"credit": self.amount_received,
-				"voucher_type": self.doctype,
-				"voucher_no": self.name,
-				"party_type": "Customer",
-				"party": self.receiver_name,
-                "remarks": "Send Money Transaction"
-            }))
+		if self.sender_currency != "TOP":
+			gl_map.append(
+				frappe._dict({
+					"posting_date": self.posting_date,
+					"transaction_date": self.posting_date,
+					"account": self.sender_agents_account,
+					"party_type": "Customer",
+					"party": self.sender_name,
+					"account_currency": self.sender_currency,
+					"debit_in_account_currency": self.amount_send,
+					"debit": self.amount_send,
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"against": "Cash in Vault - T&T",
+					"remarks": "Send Money Transaction"
+				}))
+				
+			gl_map.append(
+				frappe._dict({
+					"account": "Cash in Till - T&T",
+					"against": self.sender_agents_account,
+					"posting_date": self.posting_date,
+					"credit": self.amount_received,
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"party_type": "Customer",
+					"party": self.receiver_name,
+					"remarks": "Send Money Transaction"
+				}))
 		if self.sender_currency =="TOP":
 			gl_map.append(
 				frappe._dict({
@@ -147,7 +149,7 @@ class SendTT(Document):
 	def make_trxn_entries(self):
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": self.sender_from,
+					"user_id": frappe.session.user,
 					"posting_date": self.posting_date,
 					"currency": self.sender_currency,
 					"description": self.doctype,
