@@ -34,6 +34,4 @@ class EOD(Document):
 		currency, posting_date, inflow, description from `tabTemp`""")
 		
 	def empty_temp_table(self):	
-		frappe.db.sql("""delete from `tabTemp`""")
-	
-                                                                                                                  
+		frappe.db.sql("""delete from `tabTemp`""")                                                        
