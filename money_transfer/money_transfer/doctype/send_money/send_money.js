@@ -41,24 +41,54 @@ frappe.ui.form.on('Send Money', {
 							"City" : ["!=", frm.doc.sender_from_location]}
 			};
 			});
+			
 	},
 	
 	amount_send: function(frm) {
 		frm.set_value("amount_received", (Math.floor(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
-//		Math.floor((flt(row.debit_in_account_currency)*row.exchange_rate) * 20) / 20.0)
 	},
 		
 	fees: function(frm) {
-		if(frm.doc.fees == "Yes"){
+		if(frm.doc.fees == "Yes" && frm.doc.sender_from_location != "Otahuhu"){
 			if(flt(frm.doc.amount_send)<1000) {
 				frm.set_value("fees_amount", 5.00);
 				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
 			}
-			else if(flt(frm.doc.amount_send)>1000) {
+			else if(flt(frm.doc.amount_send)=>1000) {
 				frm.set_value("fees_amount", 10.00);
 				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
 			}
+		}else if(frm.doc.fees == "Yes" && frm.doc.sender_from_location == "Otahuhu"){
+			
+			if (frm.doc.amount_send <= 300){
+				frm.set_value("fees_amount", 5.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}
+			else if (frm.doc.amount_send > 300 && frm.doc.amount_send <= 700){
+				frm.set_value("fees_amount", 7.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}
+			else if (frm.doc.amount_send > 700 && frm.doc.amount_send <= 1000){
+				frm.set_value("fees_amount", 10.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}
+			else if (frm.doc.amount_send > 1000 && frm.doc.amount_send <= 3000){
+				frm.set_value("fees_amount", 15.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}
+			else if (frm.doc.amount_send > 3000 && frm.doc.amount_send <= 5000){
+				frm.set_value("fees_amount", 20.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}
+			else if (frm.doc.amount_send > 5000 && frm.doc.amount_send <= 7000){
+				frm.set_value("fees_amount", 25.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}else if(frm.doc.amount_send > 7000){
+				frm.set_value("fees_amount", 30.00);
+				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			}
 		}
+			
 		if(frm.doc.fees =="No"){
 			frm.set_value('fees_amount', 0.00);
 			frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
@@ -144,16 +174,8 @@ frappe.ui.form.on('Send Money', {
 	cur_frm.add_fetch('sender_from','agent_account','sender_agents_account');
 	cur_frm.add_fetch('sender_from','agent_fees_account','sender_fees_account');
 	cur_frm.add_fetch('sender_from','agent_name','send_agent_name');
-	
-//	cur_frm.add_fetch('receiver_to','agents_country','receiver_to_country');
-//	cur_frm.add_fetch('receiver_to','agents_location','receiver_to_location');
-//	cur_frm.add_fetch('receiver_to_location','currency','received_currency');
-//	cur_frm.add_fetch('receiver_to','agents_city_code','receiver_city_code');
-	
 	cur_frm.add_fetch('sender_name','customer_details','sender_details');
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
-//	cur_frm.add_fetch('receiver_to','agent_account','receiver_agent_account');
-//	cur_frm.add_fetch('receiver_to','agent_cost_center','receiver_cost_center');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
 
 
