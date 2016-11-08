@@ -54,12 +54,11 @@ frappe.ui.form.on('Send Money', {
 				frm.set_value("fees_amount", 5.00);
 				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
 			}
-			else if(flt(frm.doc.amount_send)=>1000) {
+			else if(flt(frm.doc.amount_send)>=1000) {
 				frm.set_value("fees_amount", 10.00);
 				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
 			}
 		}else if(frm.doc.fees == "Yes" && frm.doc.sender_from_location == "Otahuhu"){
-			
 			if (frm.doc.amount_send <= 300){
 				frm.set_value("fees_amount", 5.00);
 				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
