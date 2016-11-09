@@ -40,6 +40,7 @@ class ReceivedMoney(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
+		self.update_tabSend_Received_Status()
 	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries
@@ -84,3 +85,6 @@ class ReceivedMoney(Document):
 				})
 		doc.insert()
 		doc.submit()
+		
+	def update_tabSend_Received_Status(self):
+		frappe.db.sql("""Update `tabSend Money` set withdraw_status="1" where name=%s""",self.mctn)

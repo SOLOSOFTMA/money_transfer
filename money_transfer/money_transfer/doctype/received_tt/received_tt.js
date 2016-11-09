@@ -40,6 +40,7 @@ frappe.ui.form.on('Received TT', {
 				return {
 					"filters": { 
 							"docstatus": ["=", 1],
+							"withdraw_status": ["!=", 1],
 							"receiver_to_location": frm.doc.user_location
 					}
 				};

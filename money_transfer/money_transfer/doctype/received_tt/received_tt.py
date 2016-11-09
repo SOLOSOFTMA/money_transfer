@@ -22,7 +22,7 @@ class ReceivedTT(Document):
 		
 	def validate_Denomination(self):		
 		teller = frappe.get_doc("Agents", self.receiver_agents)
-		if teller.teller_function == "Teller & Till":
+		if teller.teller_function != "Teller & Till":
 			if self.amount_received != self.total_denomination:
 				msgprint(_("Please make sure that Your Total Amount Paid = Total Denomination").format(self.total_denomination),
 						raise_exception=1)
@@ -33,6 +33,7 @@ class ReceivedTT(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
+		self.update_tabSend_Received_Status()
 	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries
@@ -77,3 +78,6 @@ class ReceivedTT(Document):
 				})
 		doc.insert()
 		doc.submit()
+		
+	def update_tabSend_Received_Status(self):
+		frappe.db.sql("""Update `tabSend TT` set withdraw_status="1" where name=%s""",self.mctn)

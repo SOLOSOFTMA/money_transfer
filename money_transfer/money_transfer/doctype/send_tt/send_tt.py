@@ -65,8 +65,6 @@ class SendTT(Document):
 					"posting_date": self.posting_date,
 					"transaction_date": self.posting_date,
 					"account": self.sender_agents_account,
-					"party_type": "Customer",
-					"party": self.sender_name,
 					"account_currency": self.sender_currency,
 					"debit": self.amount_send,
 					"voucher_type": self.doctype,
@@ -82,8 +80,6 @@ class SendTT(Document):
 					"credit": self.amount_send,
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
-					"party_type": "Customer",
-					"party": self.receiver_name,
 					"remarks": "Send Money Transaction"
 				}))
 		
@@ -93,8 +89,6 @@ class SendTT(Document):
 					"posting_date": self.posting_date,
 					"transaction_date": self.posting_date,
 					"account": self.sender_agents_account,
-					"party_type": "Customer",
-					"party": self.sender_name,
 					"account_currency": self.sender_currency,
 					"debit_in_account_currency": self.amount_send,
 					"debit": flt(self.amount_send * self.exchange_rate),
@@ -112,8 +106,6 @@ class SendTT(Document):
 					"credit": flt(self.amount_send * self.exchange_rate),
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
-					"party_type": "Customer",
-					"party": self.receiver_name,
 					"remarks": "Send Money Transaction"
 				}))
 		

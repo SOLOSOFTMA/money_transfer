@@ -25,17 +25,6 @@ frappe.ui.form.on('Teller Transfer', {
 								cur_frm.set_value("transfer_from_agent", data.message["name"]);
 					}
 					});
-					frappe.call({
-							"method": "frappe.client.get",
-							args: {
-								doctype: "Agents",
-								filters: {'agent_user': Current_User},
-								name: frm.doc.sender_from
-							},
-							callback: function (data) {
-								cur_frm.set_value("transfer_from_agent", data.message["name"]);
-					}
-					});
 	 } 
 	}
 	}
