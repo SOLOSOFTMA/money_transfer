@@ -23,7 +23,7 @@ class TransferfromVault(Document):
 		doc.update({
 					"user_id": userid.agent_user,
 					"posting_date": self.transfer_date,
-					"currency": "TOP",
+					"currency": userid.agents_currency,
 					"description": self.doctype,
 					"outflow": self.transfer_amount,
 					"mctn": self.name
@@ -37,7 +37,7 @@ class TransferfromVault(Document):
 		doc.update({
 					"user_id": userid.agent_user,
 					"posting_date": self.transfer_date,
-					"currency": "TOP",
+					"currency": userid.agents_currency,
 					"description": self.doctype,
 					"inflow": self.transfer_amount,
 					"mctn": self.name

@@ -16,12 +16,12 @@ class TellerTransfer(Document):
 		self.make_trxn_entries_in()
 	
 	def make_trxn_entries_out(self):
-		userid = frappe.get_doc("Agents", self.transfer_from_agent)
+		user = frappe.get_doc("Agents", self.transfer_from_agent)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": userid.agent_user,
+					"user_id": user.agent_user,
 					"posting_date": self.transfer_date,
-					"currency": "TOP",
+					"currency": user.agents_currency,
 					"description": self.doctype,
 					"outflow": self.transfer_amount,
 					"mctn": self.name
@@ -30,12 +30,12 @@ class TellerTransfer(Document):
 		doc.submit()
 	
 	def make_trxn_entries_in(self):
-		userid = frappe.get_doc("Agents", self.transfer_to_agent)
+		user = frappe.get_doc("Agents", self.transfer_to_agent)
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
-					"user_id": userid.agent_user,
+					"user_id": user.agent_user,
 					"posting_date": self.transfer_date,
-					"currency": "TOP",
+					"currency": user.agents_currency,
 					"description": self.doctype,
 					"inflow": self.transfer_amount,
 					"mctn": self.name
