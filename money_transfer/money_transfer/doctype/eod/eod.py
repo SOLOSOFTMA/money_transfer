@@ -21,7 +21,7 @@ class EOD(Document):
 		self.update_posting_date()
 		
 	def check_eod_Maintenance(self):
-		if not eod_check:
+		if not self.eod_check:
 			msgprint(_("Please make sure EOD Maintenance is Check"))
 			
 	def save_to_temp_table(self):	

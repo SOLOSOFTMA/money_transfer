@@ -4,7 +4,8 @@
 frappe.ui.form.on('Send Money', {
 	
 	onload: function(frm) {
-		if (frm.doc.workflow_state != "UnAuthorised"){
+//		if (frm.doc.workflow_state != "UnAuthorised"){
+		if (frm.doc.docstatus != 1){
 		  var today = get_today()
 		  frm.set_value("posting_date", today);
 

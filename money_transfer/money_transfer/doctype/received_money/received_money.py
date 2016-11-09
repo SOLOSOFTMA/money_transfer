@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2015, Frappe and contributors
+# Copyright (c) 2015, Caitlah Technology and contributors
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
@@ -50,8 +50,6 @@ class ReceivedMoney(Document):
 				"posting_date": self.posting_date,
 				"transaction_date": self.withdraw_date,
                 "account": self.receiver_agents_account,
-                "party_type": "Customer",
-                "party": self.receiver_name,
 				"account_currency": self.received_currency,
 				"credit": self.amount_received,
 				"voucher_type": self.doctype,
@@ -68,8 +66,6 @@ class ReceivedMoney(Document):
 				"debit": self.amount_received,
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
-				"party_type": "Customer",
-				"party": self.receiver_name,
                 "remarks": "Withdraw Money Transaction"
             }))
 
