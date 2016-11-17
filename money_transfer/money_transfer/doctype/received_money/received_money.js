@@ -2,13 +2,19 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received Money', {
-	
+	setup: function(frm) {
+		frm.get_field('deno_details').grid.editable_fields = [
+			{fieldname: 'denomination', columns: 3},
+			{fieldname: 'deno_amount', columns: 2},
+			{fieldname: 'qty', columns: 2},
+			{fieldname: 'total', columns: 2}
+		];
+	},
 
 	onload: function(frm) {
 		var Current_User = user;
 
 		frappe.call({
-	//		var = teller;
 			method:"frappe.client.get",
 			args: {
 				doctype:"Agents",
@@ -18,13 +24,13 @@ frappe.ui.form.on('Received Money', {
 			callback: function(r) { 
 			frm.set_value("receiver_agents", r.message["name"]);
 			var teller = (r.message["teller_function"]);
-//			msgprint(teller);
 			if (teller != "Teller & Till"){
-				cur_frm.set_df_property("denomination_section", "hidden", true);
-				cur_frm.set_df_property("recalulate_total", "hidden", true);
+				cur_frm.set_df_property("denomination_starts", "hidden", true);
+				cur_frm.set_df_property("deno_details", "hidden", true);
 			} else if (teller == "Teller & Till"){
-				cur_frm.set_df_property("denomination_section", "hidden", false);
-				cur_frm.set_df_property("recalulate_total", "hidden", false);
+				cur_frm.set_df_property("denomination_starts", "hidden", false);
+				cur_frm.set_df_property("deno_details", "hidden", false);
+
 			}
 			}
 			})
@@ -179,9 +185,29 @@ frappe.ui.form.on('Received Money', {
 	
 });
 
-//cur_frm.cscript.update_totals = function(doc) {
-//	var Total_P, Total_S=0.00
-//	Total_P = frm.doc.total_p100 + frm.doc.total_p50 + frm.doc.total_p20 + frm.doc.total_p10 + frm.doc.total_p5 + frm.doc.total_p2 + frm.doc.total_p1;
-//	Total_S = frm.doc.total_s50 + frm.doc.total_s20 + frm.doc.total_s10 + frm.doc.total_s5;
-//	frm.set_value("total_denomination", Total_P + Total_S);
-//}
+frappe.ui.form.on("Deno", "qty", function(frm, cdt, cdn){
+  var d = locals[cdt][cdn];
+  frappe.model.set_value(d.doctype, d.name, "total", d.deno_amount * d.qty);
+
+  var denototal = 0;
+  frm.doc.deno_details.forEach(function(d) { denototal += d.total; });
+
+  frm.set_value("total_denomination", denototal);
+
+});
+
+frappe.ui.form.on("Deno", "denomination", function(frm, cdt, cdn){
+	var d = locals[cdt][cdn];
+	frappe.call({
+			"method": "frappe.client.get",
+			args: {
+					doctype: "Denomination Table",
+					filters: {'name': d.denomination
+								},
+				},
+					callback: function (data) {
+					frappe.model.set_value(d.doctype, d.name, "deno_amount",  data.message["denos"]);
+				}
+		})
+	
+});

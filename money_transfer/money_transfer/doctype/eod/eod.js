@@ -6,13 +6,17 @@ frappe.ui.form.on('EOD', {
 
 		},
 		onload: function(frm) {
+			if (frm.doc.docstatus != 1) {
 			  frm.set_value("eod_today", get_today());
+			}
 		}
 	
 });
-frappe.ui.form.on("EOD", "validate", function(frm) {
+frappe.ui.form.on("EOD", "eod_nextday", function(frm) {
+	var p = frm.doc;
+	var date = get_today();
     if (frm.doc.eod_nextday <= get_today())  {
-        msgprint(__("You can not select past date for Next Working Date"));
-        validated = false;
+        msgprint("You can not select past date for Next Working Date");
+		frappe.model.set_value(p.doctype, p.name, "eod_nextday", "");
     }
 });

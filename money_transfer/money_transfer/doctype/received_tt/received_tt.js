@@ -2,7 +2,14 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received TT', {
-	
+		setup: function(frm) {
+		frm.get_field('deno_details').grid.editable_fields = [
+			{fieldname: 'denomination', columns: 3},
+			{fieldname: 'deno_amount', columns: 2},
+			{fieldname: 'qty', columns: 2},
+			{fieldname: 'total', columns: 2}
+			];
+		},
 
 		onload: function(frm) {
 		var Current_User = user;
@@ -16,15 +23,13 @@ frappe.ui.form.on('Received TT', {
 				},
 			}, 
 			callback: function(r) { 
-//			frm.set_value("receiver_agents", r.message["name"]);
 			var teller = (r.message["teller_function"]);
-//			msgprint(teller);
 			if (teller != "Teller & Till"){
-			//	cur_frm.set_df_property("denomination_section", "hidden", true);
-			//	cur_frm.set_df_property("recalulate_total", "hidden", true);
+				cur_frm.set_df_property("denomination_section", "hidden", true);
+				cur_frm.set_df_property("deno_details", "hidden", true);
 			} else if (teller == "Teller & Till"){
-			//	cur_frm.set_df_property("denomination_section", "hidden", false);
-			//	cur_frm.set_df_property("recalulate_total", "hidden", false);
+				cur_frm.set_df_property("denomination_section", "hidden", false);
+				cur_frm.set_df_property("deno_details", "hidden", false);
 			}
 			}
 			})
@@ -130,5 +135,31 @@ frappe.ui.form.on('Received TT', {
 				}
 			})
 	},
+	
+});
+frappe.ui.form.on("Deno", "qty", function(frm, cdt, cdn){
+  var d = locals[cdt][cdn];
+  frappe.model.set_value(d.doctype, d.name, "total", d.deno_amount * d.qty);
+
+  var denototal = 0;
+  frm.doc.deno_details.forEach(function(d) { denototal += d.total; });
+
+  frm.set_value("total_denomination", denototal);
+
+});
+
+frappe.ui.form.on("Deno", "denomination", function(frm, cdt, cdn){
+	var d = locals[cdt][cdn];
+	frappe.call({
+			"method": "frappe.client.get",
+			args: {
+					doctype: "Denomination Table",
+					filters: {'name': d.denomination
+								},
+				},
+					callback: function (data) {
+					frappe.model.set_value(d.doctype, d.name, "deno_amount",  data.message["denos"]);
+				}
+		})
 	
 });

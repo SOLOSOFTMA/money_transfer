@@ -22,9 +22,9 @@ class ReceivedTT(Document):
 		
 	def validate_Denomination(self):		
 		teller = frappe.get_doc("Agents", self.receiver_agents)
-		if teller.teller_function != "Teller & Till":
+		if teller.teller_function == "Teller & Till":
 			if self.amount_received != self.total_denomination:
-				msgprint(_("Please make sure that Your Total Amount Paid = Total Denomination").format(self.total_denomination),
+				msgprint(_("Please make sure that your Amount Received = Total").format(self.total_denomination),
 						raise_exception=1)
 			
 	def get_title(self):
