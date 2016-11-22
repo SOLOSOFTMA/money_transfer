@@ -161,5 +161,4 @@ frappe.ui.form.on("Deno", "denomination", function(frm, cdt, cdn){
 					frappe.model.set_value(d.doctype, d.name, "deno_amount",  data.message["denos"]);
 				}
 		})
-	
 });

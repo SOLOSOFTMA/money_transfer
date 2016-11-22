@@ -29,7 +29,7 @@ class ReceivedMoney(Document):
 	
 	def validate_Denomination(self):		
 		teller = frappe.get_doc("Agents", self.receiver_agents)
-		if teller.teller_function == "Teller & Till":
+		if teller.teller_function == "Teller & Till" and self.purpose != "Shopping":
 			if self.amount_received != self.total_denomination:
 				msgprint(_("Please make sure that your Amount Received = Total").format(self.total_denomination),
 						raise_exception=1)
@@ -88,3 +88,20 @@ class ReceivedMoney(Document):
 		
 	def update_tabSend_Received_Status(self):
 		frappe.db.sql("""Update `tabSend Money` set withdraw_status="1" where name=%s""",self.mctn)
+	
+	def get_shopping_list(self):				
+		condition = ""
+		product_table = frappe.db.sql("""select item_code, description, rate, qty, amount, parent
+			from `tabMoney Transfer Product` 
+			where parent = %s {0}""".format(condition), (self.mctn), as_dict=1)
+			
+		entries = sorted(list(product_table), 
+			key=lambda k: k['parent'])
+				
+		self.set('product_table', [])
+		self.total_denomination = 0.0
+
+		for d in entries:
+			row = self.append('product_table', {})
+			row.update(d)
+			self.total_denomination += flt(d.amount)

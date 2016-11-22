@@ -3,11 +3,20 @@
 
 frappe.ui.form.on('Received Money', {
 	setup: function(frm) {
+//		frm.get_docfield("product_table").allow_bulk_edit = 1;
+		
 		frm.get_field('deno_details').grid.editable_fields = [
 			{fieldname: 'denomination', columns: 3},
 			{fieldname: 'deno_amount', columns: 2},
 			{fieldname: 'qty', columns: 2},
 			{fieldname: 'total', columns: 2}
+		];
+		frm.get_field('product_table').grid.editable_fields = [
+			{fieldname: 'item_code', columns: 2},
+			{fieldname: 'description', columns: 2},
+			{fieldname: 'qty', columns: 2},
+			{fieldname: 'rate', columns: 2},
+			{fieldname: 'amount', columns: 2} 
 		];
 	},
 
@@ -87,13 +96,17 @@ frappe.ui.form.on('Received Money', {
 		}
 
 	},
-	recalculate: function(frm) {		
-		var Total_P, Total_S=0.00
-		Total_P = frm.doc.total_p100 + frm.doc.total_p50 + frm.doc.total_p20 + frm.doc.total_p10 + frm.doc.total_p5 + frm.doc.total_p2 + frm.doc.total_p1;
-		Total_S = frm.doc.total_s50 + frm.doc.total_s20 + frm.doc.total_s10 + frm.doc.total_s5;
-		frm.set_value("total_denomination", Total_P + Total_S);
+	get_shopping_list: function(frm) {
+		return frappe.call({
+			method: "get_shopping_list",
+			doc: frm.doc,
+			callback: function(r, rt) {
+				frm.refresh_field("product_table");
+				frm.refresh_fields();
+			}
+		});
 	},
-	
+
 	mctn: function(frm) {
 		cur_frm.set_value("sender_from", "");
 				frappe.call({
@@ -102,7 +115,6 @@ frappe.ui.form.on('Received Money', {
 							doctype: "Send Money",
 							filters: {'name': frm.doc.mctn,
 							'docstatus': 1},
-							name: frm.doc.sender_from
 						},
 						callback: function (data) {
 							cur_frm.set_value("company", data.message["company"]);
@@ -140,50 +152,11 @@ frappe.ui.form.on('Received Money', {
 							cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);							
 				}
 			})
-	},
-	
-	p100: function(frm) {
-		frm.set_value("total_p100", flt(frm.doc.p100*100));
-		
-	},
-	p50: function(frm) {
-		frm.set_value("total_p50", flt(frm.doc.p50*50));
-		
-	},
-	p20: function(frm) {
-		frm.set_value("total_p20", flt(frm.doc.p20*20));
-	},
-	p10: function(frm) {
-		frm.set_value("total_p10", flt(frm.doc.p10*10));
-	},
-	p5: function(frm) {
-		frm.set_value("total_p5", flt(frm.doc.p5*5));
-	},
-	p2: function(frm) {
-		frm.set_value("total_p2", flt(frm.doc.p2*2));
-	},
-	p1: function(frm) {
-		frm.set_value("total_p1", flt(frm.doc.p1*1));
-	},
-	// Seniti
-	s50: function(frm) {
-		frm.set_value("total_s50", flt(frm.doc.s50*0.5));
-	},
-	s20: function(frm) {
-		frm.set_value("total_s20", flt(frm.doc.s20*0.2));
-	},
-	s10: function(frm) {
-		frm.set_value("total_s10", flt(frm.doc.s10*0.1));
-	},
-	s5: function(frm) {
-		frm.set_value("total_s5", flt(frm.doc.s5*0.05));
-	},
-	
-	total_denomination: function(frm) {
-		
-	}
-	
+			
+	},	
 });
+
+
 
 frappe.ui.form.on("Deno", "qty", function(frm, cdt, cdn){
   var d = locals[cdt][cdn];

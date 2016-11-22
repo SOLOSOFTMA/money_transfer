@@ -2,12 +2,32 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Send Money', {
+	setup: function(frm) {
+		frm.get_field('product_table').grid.editable_fields = [
+			{fieldname: 'item_code', columns: 2},
+			{fieldname: 'description', columns: 2},
+			{fieldname: 'qty', columns: 2},
+			{fieldname: 'rate', columns: 2},
+			{fieldname: 'amount', columns: 2}
+		];
+	},
 	
 	onload: function(frm) {
+		frm.set_query("receiver_to_location", function() {
+			return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
+		});
 //		if (frm.doc.workflow_state != "UnAuthorised"){
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
 		  frm.set_value("posting_date", today);
+		  
+		   if (frm.doc.purpose == "Shopping"){
+			  cur_frm.set_df_property("shopping_section", "hidden", false);
+		  }else if (frm.doc.purpose != "Shopping"){
+			  cur_frm.set_df_property("shopping_section", "hidden", true);
+			
+		  }
+		 
 
 		  var Current_User = user;
 //		  frm.set_value("send_by", Current_User);
@@ -33,65 +53,79 @@ frappe.ui.form.on('Send Money', {
 				})
 			} 
 		}
+		
 	},
 	
 	refresh: function(frm) {
-		frm.set_query("receiver_to_location", function() {
-			return {
-				"filters": { "country": ["=", frm.doc.receiver_to],
-							"City" : ["!=", frm.doc.sender_from_location]}
-			};
-			});
+//		frm.set_query("receiver_to_location", function() {
+//			return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
+//		});
 			
 	},
 	
+	convert_top : function(frm){
+		var Convert_TOP = flt(frm.doc.shopping_total/frm.doc.exchange_rate);
+		cur_frm.set_value("amount_send", Convert_TOP);
+		
+	},
+	
+	purpose: function(frm){
+		 if (frm.doc.purpose == "Shopping"){
+			  cur_frm.set_df_property("shopping_section", "hidden", false);
+		  }else if (frm.doc.purpose != "Shopping"){
+			  cur_frm.set_df_property("shopping_section", "hidden", true);
+			
+		  }
+	},
+	
 	amount_send: function(frm) {
-		frm.set_value("amount_received", (Math.floor(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+		frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
 	},
 		
 	fees: function(frm) {
 		if(frm.doc.fees == "Yes" && frm.doc.sender_from_location != "Otahuhu"){
 			if(flt(frm.doc.amount_send)<1000) {
 				frm.set_value("fees_amount", 5.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 			else if(flt(frm.doc.amount_send)>=1000) {
 				frm.set_value("fees_amount", 10.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 		}else if(frm.doc.fees == "Yes" && frm.doc.sender_from_location == "Otahuhu"){
 			if (frm.doc.amount_send <= 300){
 				frm.set_value("fees_amount", 5.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 			else if (frm.doc.amount_send > 300 && frm.doc.amount_send <= 700){
 				frm.set_value("fees_amount", 7.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 			else if (frm.doc.amount_send > 700 && frm.doc.amount_send <= 1000){
 				frm.set_value("fees_amount", 10.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 			else if (frm.doc.amount_send > 1000 && frm.doc.amount_send <= 3000){
 				frm.set_value("fees_amount", 15.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 			else if (frm.doc.amount_send > 3000 && frm.doc.amount_send <= 5000){
 				frm.set_value("fees_amount", 20.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 			else if (frm.doc.amount_send > 5000 && frm.doc.amount_send <= 7000){
 				frm.set_value("fees_amount", 25.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}else if(frm.doc.amount_send > 7000){
 				frm.set_value("fees_amount", 30.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
 			}
 		}
 			
 		if(frm.doc.fees =="No"){
 			frm.set_value('fees_amount', 0.00);
-			frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			frm.set_value("total_amount_paid", (Math.ceil(flt(frm.doc.amount_send + frm.doc.fees_amount) * 20)/20));
+			
 		}else if (frm.doc.fees ==""){
 			frm.set_value('fees_amount', "");
 			frm.set_value("total_amount_paid", "");
@@ -179,3 +213,28 @@ frappe.ui.form.on('Send Money', {
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
 
 
+frappe.ui.form.on("Money Transfer Product", "item_code", function(frm, cdt, cdn){
+	var d = locals[cdt][cdn];
+	frappe.call({
+			"method": "frappe.client.get",
+			args: {
+					doctype: "Item",
+					filters: {'name': d.item_code
+								},
+				},
+				callback: function (data) {
+					frappe.model.set_value(d.doctype, d.name, "rate",  data.message["standard_rate"]);
+					frappe.model.set_value(d.doctype, d.name, "description",  data.message["item_name"]);
+				}
+		})
+});
+frappe.ui.form.on("Money Transfer Product", "qty", function(frm, cdt, cdn){
+  var d = locals[cdt][cdn];
+  frappe.model.set_value(d.doctype, d.name, "amount", d.rate * d.qty);
+
+  var total_amount = 0;
+  frm.doc.product_table.forEach(function(d) { total_amount += d.amount; });
+
+  frm.set_value("shopping_total", total_amount);
+
+});
