@@ -88,6 +88,12 @@ def get_data():
 					"name": "Tellers Details Report",
 					"doctype": "Send Money"
 				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "OET Report",
+					"doctype": "Send Money"
+				},
 			]
 		},
 		{

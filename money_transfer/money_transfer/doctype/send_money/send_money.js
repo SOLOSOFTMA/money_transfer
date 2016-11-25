@@ -138,6 +138,7 @@ frappe.ui.form.on('Send Money', {
 			args: {
 					doctype: "Location",
 					filters: {'country': frm.doc.receiver_to},
+							name : frm.doc.name
 				},
 					callback: function (data) {
 					cur_frm.set_value("received_currency", data.message["currency"]);
@@ -172,6 +173,9 @@ frappe.ui.form.on('Send Money', {
 					doctype: "Location",
 					filters: {'City': frm.doc.receiver_to_location
 								},
+							
+					name : frm.doc.name
+			
 				},
 					callback: function (data) {
 					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
