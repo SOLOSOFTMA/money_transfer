@@ -29,7 +29,6 @@ frappe.ui.form.on('Received Money', {
 				doctype:"Agents",
 				filters: {'agent_user': Current_User
 				},		
-				fieldname: "name",
 			}, 
 			callback: function(r) { 
 			frm.set_value("receiver_agents", r.message["name"]);
@@ -118,7 +117,7 @@ frappe.ui.form.on('Received Money', {
 								'name': frm.doc.mctn,
 								'docstatus' : 1
 							},	
-							name: frm.doc.name
+		
 						},
 						callback: function (data) {
 							cur_frm.set_value("company", data.message["company"]);
@@ -181,7 +180,6 @@ frappe.ui.form.on("Deno", "denomination", function(frm, cdt, cdn){
 					doctype: "Denomination Table",
 					filters: {'name': d.denomination
 								},
-					name : frm.doc.name
 				},
 					callback: function (data) {
 					frappe.model.set_value(d.doctype, d.name, "deno_amount",  data.message["denos"]);

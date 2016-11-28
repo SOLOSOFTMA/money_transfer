@@ -138,7 +138,7 @@ frappe.ui.form.on('Send Money', {
 			args: {
 					doctype: "Location",
 					filters: {'country': frm.doc.receiver_to},
-							name : frm.doc.name
+							
 				},
 					callback: function (data) {
 					cur_frm.set_value("received_currency", data.message["currency"]);
@@ -173,19 +173,17 @@ frappe.ui.form.on('Send Money', {
 					doctype: "Location",
 					filters: {'City': frm.doc.receiver_to_location
 								},
-							
-					name : frm.doc.name
 			
 				},
 					callback: function (data) {
-					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
-					if (frm.doc.sender_city_code == frm.doc.receiver_city_code){
-						msgprint("You are not allowed to Send and Received Money on the same Agent");
-						frm.set_value("receiver_city_code", "");
-					}else if (frm.doc.sender_city_code != frm.doc.receiver_city_code){
+			//		cur_frm.set_value("receiver_city_code", data.message["city_code"]);
+			//		if (frm.doc.sender_city_code === frm.doc.receiver_city_code){
+			//			msgprint("You are not allowed to Send and Received Money on the same Agent");
+			//			frm.set_value("receiver_city_code", "");
+			//		}else if (frm.doc.sender_city_code != frm.doc.receiver_city_code){
 						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
 						frm.set_value("naming_series", MTCN_Value + "-");
-					}
+			//		}
 				}
 		});
 		frappe.call({
