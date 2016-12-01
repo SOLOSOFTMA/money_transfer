@@ -187,15 +187,3 @@ class SendMoney(Document):
 				})
 		doc.insert()
 		doc.submit()
-
-@frappe.whitelist()
-def get_exchange_rate(to_currency=None, from_currency=None, exchange_rate=None):
-	from erpnext.setup.utils import get_exchange_rate
-	
-	if self.sender_currency != self.received_currency:
-		exchange_rate = get_exchange_rate(to_currency, from_currency)
-	else:
-		exchange_rate = 1
-
-	# don't return None or 0 as it is multipled with a value and that value could be lost
-	return exchange_rate or 1

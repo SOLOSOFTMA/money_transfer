@@ -9,7 +9,6 @@ frappe.ui.form.on('Send TT', {
 		  frm.set_value("posting_date", today);
 
 		  var Current_User = user;
-//		  frm.set_value("send_by", Current_User);
 		  if (Current_User != "Administrator"){
 			  cur_frm.set_value("sender_from", "");
 						frappe.call({
@@ -21,8 +20,6 @@ frappe.ui.form.on('Send TT', {
 								},
 								callback: function (data) {
 									cur_frm.set_value("sender_from", data.message["name"]);
-									//cur_frm.set_value("sender_from_country", data.message["agents_country"]);
-									//cur_frm.set_value("sender_from_location", data.message["agents_location"]);
 									cur_frm.set_value("sender_currency", data.message["agents_currency"]);
 									cur_frm.set_value("sender_city_code", data.message["agents_city_code"]);
 									cur_frm.set_value("sender_agents_account", data.message["agent_account"]);
@@ -109,28 +106,6 @@ frappe.ui.form.on('Send TT', {
 				}
 		});
 		
-		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
-			frm.set_value("multicurrency", 1);
-			if (frm.doc.sender_from_country != frm.doc.received_to) {
-				frappe.call({
-						"method": "frappe.client.get",
-						args: {
-							doctype: "Currency Exchange",
-							filters: {'from_currency': frm.doc.sender_currency,
-									  'to_currency': frm.doc.received_currency},
-						},
-						callback: function (data) {
-							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-				}
-				})
-			}
-		}else {
-			frm.set_value("multicurrency", 0);
-			cur_frm.set_value("exchange_rate", 1.00);
-		}
-
-//		var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
-//		frm.set_value("naming_series", MTCN_Value + "-" + "TT" + "-");
 	},
 	receiver_to_location: function(frm) {
 		
@@ -163,7 +138,26 @@ frappe.ui.form.on('Send TT', {
 					cur_frm.set_value("receiver_agent_account", data.message["agent_account"]);
 				}
 		});
-		
+		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
+			frm.set_value("multicurrency", 1);
+				frappe.call({
+						"method": "frappe.client.get",
+						args: {
+							doctype: "Currency Exchange",
+							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
+									  'from_currency': frm.doc.sender_currency,
+									  'to_currency': frm.doc.received_currency},
+						},
+						callback: function (data) {
+							
+							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
+				}
+				});
+			
+		}else {
+			frm.set_value("multicurrency", 0);
+			cur_frm.set_value("exchange_rate", 1.00);
+		}
 	}
 	
 });
@@ -176,16 +170,8 @@ frappe.ui.form.on('Send TT', {
 	cur_frm.add_fetch('sender_from','agent_account','sender_agents_account');
 	cur_frm.add_fetch('sender_from','agent_fees_account','sender_fees_account');
 	cur_frm.add_fetch('sender_from','agent_name','send_agent_name');
-	
-//	cur_frm.add_fetch('receiver_to','agents_country','receiver_to_country');
-//	cur_frm.add_fetch('receiver_to','agents_location','receiver_to_location');
-//	cur_frm.add_fetch('receiver_to','agents_currency','received_currency');
-//	cur_frm.add_fetch('receiver_to','agents_city_code','receiver_city_code');
-	
 	cur_frm.add_fetch('sender_name','customer_details','sender_details');
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
-//	cur_frm.add_fetch('receiver_to','agent_account','receiver_agent_account');
-//	cur_frm.add_fetch('receiver_to','agent_cost_center','receiver_cost_center');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
 	
 	cur_frm.add_fetch('person_lodge_application','customer_details','person_lodge_app_details');

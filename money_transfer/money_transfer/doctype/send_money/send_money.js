@@ -132,7 +132,6 @@ frappe.ui.form.on('Send Money', {
 		}
 	},
 	receiver_to: function(frm) {
-		var tocurrency = frm.doc.received_currency;
 		frappe.call({
 			"method": "frappe.client.get",
 			args: {

@@ -106,15 +106,12 @@ frappe.ui.form.on('Received TT', {
 							cur_frm.set_value("sender_from_country", data.message["sender_from_country"]);
 							cur_frm.set_value("sender_from_location", data.message["sender_from_location"]);
 							cur_frm.set_value("sender_currency", data.message["sender_currency"]);
-			//				cur_frm.set_value("sender_agents", data.message["sender_agents"]);
 							cur_frm.set_value("received_by", data.message["send_by"]);
 							
 							cur_frm.set_value("receiver_to", data.message["receiver_to"]);
-			//				cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
 							cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
 							cur_frm.set_value("received_currency", data.message["received_currency"]);
-			//				cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
-							
+						
 							cur_frm.set_value("amount_send", data.message["amount_send"]);
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
 							cur_frm.set_value("amount_received", data.message["amount_received"]);
@@ -131,7 +128,14 @@ frappe.ui.form.on('Received TT', {
 							
 							cur_frm.set_value("receiver_name", data.message["receiver_name"]);
 							cur_frm.set_value("receiver_details", data.message["receiver_details"]);
-							cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);							
+							cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);
+							cur_frm.set_value("file",data.message["file"]);
+							cur_frm.set_value("bank_name",data.message["bank_name"]);
+							cur_frm.set_value("bank_address",data.message["bank_address"]);
+							cur_frm.set_value("account_number",data.message["account_number"]);
+							cur_frm.set_value("bsb_number",data.message["bsb_number"]);
+							cur_frm.set_value("swift_code",data.message["swift_code"]);
+							
 				}
 			})
 	},
