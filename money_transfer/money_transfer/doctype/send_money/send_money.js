@@ -132,7 +132,7 @@ frappe.ui.form.on('Send Money', {
 		}
 	},
 	receiver_to: function(frm) {
-		
+		var tocurrency = frm.doc.received_currency;
 		frappe.call({
 			"method": "frappe.client.get",
 			args: {
@@ -145,25 +145,7 @@ frappe.ui.form.on('Send Money', {
 				}
 		});
 		
-		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
-			frm.set_value("multicurrency", 1);
-			if (frm.doc.sender_from_country != frm.doc.received_to) {
-				frappe.call({
-						"method": "frappe.client.get",
-						args: {
-							doctype: "Currency Exchange",
-							filters: {'from_currency': frm.doc.sender_currency,
-									  'to_currency': frm.doc.received_currency},
-						},
-						callback: function (data) {
-							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-				}
-				})
-			}
-		}else {
-			frm.set_value("multicurrency", 0);
-			cur_frm.set_value("exchange_rate", 1.00);
-		}
+		
 	},
 	receiver_to_location: function(frm) {
 		
@@ -173,17 +155,11 @@ frappe.ui.form.on('Send Money', {
 					doctype: "Location",
 					filters: {'City': frm.doc.receiver_to_location
 								},
-			
 				},
 					callback: function (data) {
-			//		cur_frm.set_value("receiver_city_code", data.message["city_code"]);
-			//		if (frm.doc.sender_city_code === frm.doc.receiver_city_code){
-			//			msgprint("You are not allowed to Send and Received Money on the same Agent");
-			//			frm.set_value("receiver_city_code", "");
-			//		}else if (frm.doc.sender_city_code != frm.doc.receiver_city_code){
+					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
 						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
 						frm.set_value("naming_series", MTCN_Value + "-");
-			//		}
 				}
 		});
 		frappe.call({
@@ -197,6 +173,26 @@ frappe.ui.form.on('Send Money', {
 					cur_frm.set_value("receiver_agent_account", data.message["agent_account"]);
 				}
 		});
+		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
+			frm.set_value("multicurrency", 1);
+				frappe.call({
+						"method": "frappe.client.get",
+						args: {
+							doctype: "Currency Exchange",
+							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
+									  'from_currency': frm.doc.sender_currency,
+									  'to_currency': frm.doc.received_currency},
+						},
+						callback: function (data) {
+							
+							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
+				}
+				});
+			
+		}else {
+			frm.set_value("multicurrency", 0);
+			cur_frm.set_value("exchange_rate", 1.00);
+		}
 		
 	}
 	
