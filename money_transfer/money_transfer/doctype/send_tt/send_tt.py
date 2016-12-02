@@ -181,7 +181,7 @@ class SendTT(Document):
 					"account": "Govt Levy - T&T",
 					"against": self.sender_agents_account,
 					"posting_date": self.posting_date,
-					"credit": self.govt_levy,,
+					"credit": self.govt_levy,
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
 					"cost_center": self.sender_cost_center,
