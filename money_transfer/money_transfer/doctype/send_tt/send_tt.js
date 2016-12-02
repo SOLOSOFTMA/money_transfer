@@ -49,48 +49,48 @@ frappe.ui.form.on('Send TT', {
 		if(frm.doc.fees == "Yes" && frm.doc.sender_from_location != "Otahuhu"){
 			if(flt(frm.doc.amount_send)<1000) {
 				frm.set_value("fees_amount", 5.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 			else if(flt(frm.doc.amount_send)>=1000) {
 				frm.set_value("fees_amount", 10.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 		}else if(frm.doc.fees == "Yes" && frm.doc.sender_from_location == "Otahuhu"){
 			if (frm.doc.amount_send <= 300){
 				frm.set_value("fees_amount", 5.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 			else if (frm.doc.amount_send > 300 && frm.doc.amount_send <= 700){
 				frm.set_value("fees_amount", 7.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 			else if (frm.doc.amount_send > 700 && frm.doc.amount_send <= 1000){
 				frm.set_value("fees_amount", 10.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 			else if (frm.doc.amount_send > 1000 && frm.doc.amount_send <= 3000){
 				frm.set_value("fees_amount", 15.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 			else if (frm.doc.amount_send > 3000 && frm.doc.amount_send <= 5000){
 				frm.set_value("fees_amount", 20.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 			else if (frm.doc.amount_send > 5000 && frm.doc.amount_send <= 7000){
 				frm.set_value("fees_amount", 25.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}else if(frm.doc.amount_send > 7000){
 				frm.set_value("fees_amount", 30.00);
-				frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+				calculate_total_amount(frm);
 			}
 		}
 			
 		if(frm.doc.fees =="No"){
 			frm.set_value('fees_amount', 0.00);
-			frm.set_value("total_amount_paid", flt(frm.doc.amount_send + frm.doc.fees_amount));
+			calculate_total_amount(frm);
 		}else if (frm.doc.fees ==""){
 			frm.set_value('fees_amount', "");
-			frm.set_value("total_amount_paid", "");
+			calculate_total_amount(frm);
 		}
 	},
 	receiver_to: function(frm) {
@@ -118,13 +118,8 @@ frappe.ui.form.on('Send TT', {
 				},
 					callback: function (data) {
 					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
-					if (frm.doc.sender_city_code == frm.doc.receiver_city_code){
-						msgprint("You are not allowed to Send and Received Money on the same Agent");
-						frm.set_value("receiver_city_code", "");
-					}else if (frm.doc.sender_city_code != frm.doc.receiver_city_code){
 						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
-						frm.set_value("naming_series", MTCN_Value + "-" + "TT" + "-");
-					}
+						frm.set_value("naming_series", MTCN_Value + "-");
 				}
 		});
 		frappe.call({
@@ -158,9 +153,22 @@ frappe.ui.form.on('Send TT', {
 			frm.set_value("multicurrency", 0);
 			cur_frm.set_value("exchange_rate", 1.00);
 		}
+	},
+	levy: function(frm) {
+		if (frm.doc.levy == "YES"){
+			frm.set_value("govt_levy", flt(frm.doc.amount_send * 0.005));
+			calculate_total_amount(frm);
+		}if (frm.doc.levy == "NO"){
+			frm.set_value("govt_levy", 0.00);
+			calculate_total_amount(frm);
+		}else if (frm.doc.levy == ""){
+			frm.set_value("govt_levy", "");
+		}
 	}
 	
 });
+
+
 	
 	cur_frm.add_fetch('sender_from','agents_country','sender_from_country');
 	cur_frm.add_fetch('sender_from','agents_location','sender_from_location');
@@ -173,5 +181,15 @@ frappe.ui.form.on('Send TT', {
 	cur_frm.add_fetch('sender_name','customer_details','sender_details');
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
-	
 	cur_frm.add_fetch('person_lodge_application','customer_details','person_lodge_app_details');
+
+
+
+var calculate_total_amount = function(frm){
+	if (frm.doc.fees_amount == ""){
+		frm.doc,fees_amount = 0
+	}
+	var total_amount = flt(frm.doc.amount_send + frm.doc.fees_amount + frm.doc.govt_levy);
+	frm.set_value("total_amount_paid", total_amount);
+		
+}

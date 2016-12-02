@@ -163,6 +163,31 @@ class SendTT(Document):
 					"remarks": "Fees"
 				})
 			)
+		if self.sender_currency =="TOP":
+			gl_map.append(
+				frappe._dict({
+					"account": self.sender_agents_account,
+					"against": "Govt Levy - T&T",
+					"posting_date": self.posting_date,
+					"debit": flt(self.amount_send * 0.0005),
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"cost_center": self.sender_cost_center,
+					"remarks": "Ex Rate Govt Levy"
+				})
+			)
+			gl_map.append(
+				frappe._dict({
+					"account": "Govt Levy - T&T",
+					"against": self.sender_agents_account,
+					"posting_date": self.posting_date,
+					"credit": flt(self.amount_send * 0.0005),
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"cost_center": self.sender_cost_center,
+					"remarks": "Ex Rate Govt Levy"
+				})
+			)
 			
 		if gl_map:
 			make_gl_entries(gl_map, cancel=(self.docstatus == 2))
