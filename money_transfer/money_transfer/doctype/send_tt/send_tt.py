@@ -31,6 +31,10 @@ class SendTT(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
+		self.del_transactions()
+	
+	def del_transactions(self):
+		frappe.db.sql("""Update `tabTransactions Details` set docstatus=2 where mctn = %s""", self.name)
 		
 	def get_title(self):
 		return self.sender_name
