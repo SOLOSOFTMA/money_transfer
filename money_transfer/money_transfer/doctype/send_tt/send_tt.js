@@ -45,7 +45,7 @@ frappe.ui.form.on('Send TT', {
 		frm.set_value("amount_received", (Math.floor(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
 	},
 		
-		fees: function(frm) {
+	fees: function(frm) {
 		if(frm.doc.fees == "Yes" && frm.doc.sender_from_location != "Otahuhu"){
 			if(flt(frm.doc.amount_send)<1000) {
 				frm.set_value("fees_amount", 5.00);
@@ -119,7 +119,7 @@ frappe.ui.form.on('Send TT', {
 					callback: function (data) {
 					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
 						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
-						frm.set_value("naming_series", MTCN_Value + "-");
+						frm.set_value("naming_series", MTCN_Value + "-" + "TT" + "-");
 				}
 		});
 		frappe.call({
@@ -155,10 +155,10 @@ frappe.ui.form.on('Send TT', {
 		}
 	},
 	levy: function(frm) {
-		if (frm.doc.levy == "YES"){
+		if (frm.doc.levy == "Yes"){
 			frm.set_value("govt_levy", flt(frm.doc.amount_send * 0.005));
 			calculate_total_amount(frm);
-		}if (frm.doc.levy == "NO"){
+		}if (frm.doc.levy == "No"){
 			frm.set_value("govt_levy", 0.00);
 			calculate_total_amount(frm);
 		}else if (frm.doc.levy == ""){
