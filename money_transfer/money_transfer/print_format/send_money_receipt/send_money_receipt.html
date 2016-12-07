@@ -42,9 +42,9 @@
 		(_("ID No"), doc.sender_id_no),
 		(_("Amount"), frappe.utils.fmt_money(doc.amount_send)),
 		(_("Currency"), doc.sender_currency),
-		(_("Ex Rate"), doc.exchange_rate)
-		
-		
+		(_("Ex Rate"), doc.exchange_rate),
+		(_("Fee"), doc.fees_amount),
+		(_("Levy"), doc.govt_levy),
     ) -%}
     <div class="row">
 			<div class="col-xs-4"><label class="text-right">{{ label }}</label></div>

@@ -43,6 +43,7 @@ frappe.ui.form.on('Send TT', {
 	
 	amount_send: function(frm) {
 		frm.set_value("amount_received", (Math.floor(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+		calculate_total_amount(frm);
 	},
 		
 	fees: function(frm) {
@@ -94,6 +95,10 @@ frappe.ui.form.on('Send TT', {
 		}
 	},
 	receiver_to: function(frm) {
+		if (frm.doc.receiver_to == ""){
+			frappe.msgprint(__("Please select where you send Money to"))
+			return;
+		}
 		
 		frappe.call({
 			"method": "frappe.client.get",
@@ -168,8 +173,6 @@ frappe.ui.form.on('Send TT', {
 	
 });
 
-
-	
 	cur_frm.add_fetch('sender_from','agents_country','sender_from_country');
 	cur_frm.add_fetch('sender_from','agents_location','sender_from_location');
 	cur_frm.add_fetch('sender_from','agents_currency','sender_currency');

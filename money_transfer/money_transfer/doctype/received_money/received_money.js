@@ -3,7 +3,6 @@
 
 frappe.ui.form.on('Received Money', {
 	setup: function(frm) {
-//		frm.get_docfield("product_table").allow_bulk_edit = 1;
 		
 		frm.get_field('deno_details').grid.editable_fields = [
 			{fieldname: 'denomination', columns: 3},
@@ -135,24 +134,31 @@ frappe.ui.form.on('Received Money', {
 							cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
 							cur_frm.set_value("received_currency", data.message["received_currency"]);
 //							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
-							
 							cur_frm.set_value("amount_send", data.message["amount_send"]);
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-							cur_frm.set_value("amount_received", data.message["amount_received"]);
 							cur_frm.set_value("fees", data.message["fees"]);
 							cur_frm.set_value("fees_amount", data.message["fees_amount"]);
 							cur_frm.set_value("total_amount_paid", data.message["total_amount_paid"]);
-							
 							cur_frm.set_value("sender_name", data.message["sender_name"]);
 							cur_frm.set_value("sender_id_type", data.message["sender_id_type"]);
 							cur_frm.set_value("sender_id_no", data.message["sender_id_no"]);
 							cur_frm.set_value("sender_details", data.message["sender_details"]);
 							cur_frm.set_value("sender_agents_account", data.message["sender_agents_account"]);
 							cur_frm.set_value("receiver_agents_account", data.message["receiver_agent_account"]);
-							
 							cur_frm.set_value("receiver_name", data.message["receiver_name"]);
 							cur_frm.set_value("receiver_details", data.message["receiver_details"]);
-							cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);							
+							cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);	
+							cur_frm.set_value("amount_received", data.message["amount_received"]);
+							
+							cur_frm.set_df_property("purpose", "read_only", 1);
+							cur_frm.set_df_property("sender_from_country", "read_only", 1);
+							cur_frm.set_df_property("exchange_rate", "read_only", 1);
+							cur_frm.set_df_property("amount_send", "read_only", 1);
+							cur_frm.set_df_property("sender_name", "read_only", 1);
+							cur_frm.set_df_property("sender_details", "read_only", 1);
+							cur_frm.set_df_property("total_denomination", "read_only", 1);
+
+								
 				}
 			})
 			

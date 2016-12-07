@@ -97,6 +97,16 @@ def get_data():
 			]
 		},
 		{
+			"label": _("Shopping"),
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Item",
+					"description": _("Products."),
+				},
+			]
+		},
+		{
 			"label": _("End of Day"),
 			"items": [
 				{
