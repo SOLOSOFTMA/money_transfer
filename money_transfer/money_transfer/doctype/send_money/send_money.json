@@ -1611,7 +1611,7 @@
    "unique": 0
   }, 
   {
-   "allow_on_submit": 0, 
+   "allow_on_submit": 1, 
    "bold": 0, 
    "collapsible": 0, 
    "fieldname": "receiver_name", 
@@ -1969,7 +1969,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2016-12-08 06:45:48.923333", 
+ "modified": "2016-12-08 12:31:52.054812", 
  "modified_by": "Administrator", 
  "module": "Money Transfer", 
  "name": "Send Money", 
