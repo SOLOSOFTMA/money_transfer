@@ -92,7 +92,13 @@ def get_data():
 					"type": "report",
 					"is_query_report": True,
 					"name": "OET Report",
-					"doctype": "Send Money"
+					"doctype": "Received Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "OET Report TT",
+					"doctype": "Received TT"
 				},
 			]
 		},
