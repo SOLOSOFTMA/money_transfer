@@ -15,6 +15,7 @@ class SendMoney(Document):
 		super(SendMoney, self).__init__(arg1, arg2)
 	
 	def validate(self):
+		self.validate_amount_send()
 		self.validate_sender_details()
 		if not self.send_date:
 			self.send_date = self.posting_date
@@ -42,6 +43,17 @@ class SendMoney(Document):
 		
 	def get_title(self):
 		return self.sender_name
+	
+	def validate_amount_send(self):
+		if not self.amount_send:
+			msgprint(_("Amount Send is Manadory").format(self.purpose),
+					raise_exception=1)
+		if not self.fees:
+			msgprint(_("Fees is Manadory").format(self.purpose),
+					raise_exception=1)
+		if not self.levy:
+			msgprint(_("Levy is Manadory").format(self.purpose),
+					raise_exception=1)
 		
 	def validate_sender_details(self):
 		if not self.purpose:
