@@ -1,0 +1,19 @@
+{
+ "add_total_row": 1, 
+ "apply_user_permissions": 1, 
+ "creation": "2016-12-08 21:25:06.684917", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "modified": "2016-12-08 21:45:21.994683", 
+ "modified_by": "Administrator", 
+ "module": "Money Transfer", 
+ "name": "Send Money Yet to Withdraw", 
+ "owner": "Administrator", 
+ "query": "SELECT\n`tabSend Money`.`name` as \"MTCN\",\n\tCASE `tabSend Money`.docstatus\n\t\twhen 0 then \"Not Submitted\"\n\t\twhen 1 then \"Submitted\"\n\t\telse\t\t\"Cancel\"\n\tEND as \"Status:150\",\n`tabSend Money`.posting_date as \"Posting Date\",\n`tabSend Money`.sender_from_location as \"From City\",\n`tabSend Money`.sender_from_country as \"From Country\",\n`tabSend Money`.receiver_to as \"To Country\",\n`tabSend Money`.receiver_to_location as \"To City\",\n`tabSend Money`.sender_currency as \"Send Currency\",\n`tabSend Money`.received_currency as \"Received Currency\",\n`tabSend Money`.amount_send as \"Amount Send\",\n`tabSend Money`.exchange_rate as \"Exchange Rate\",\n`tabSend Money`.amount_received as \"Amount Received\",\n`tabSend Money`.sender_name as \"Sender Name\",\n`tabSend Money`.receiver_name as \"Receiver Name\",\n`tabSend Money`.send_date as \"Send Date\",\n`tabUser`.full_name as \"Send By\",\n`tabSend Money`.withdraw_status as \"Withdraw Status\"\nFROM\n`tabSend Money`, `tabAgents`, `tabUser`\nWHERE\n`tabSend Money`.send_by = `tabAgents`.agent_user\nAND\n`tabAgents`.agent_user = `tabUser`.email\n", 
+ "ref_doctype": "Send Money", 
+ "report_name": "Send Money Yet to Withdraw", 
+ "report_type": "Query Report"
+}

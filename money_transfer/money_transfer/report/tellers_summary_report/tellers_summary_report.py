@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt, getdate, cstr
 from frappe import _
-from erpnext.accounts.utils import get_account_currency
 
 def execute(filters=None):
 	
@@ -25,7 +24,7 @@ def get_columns(filters):
 	columns = [
 		_("Status") + "::90", _("Teller Name") + ":Link/User:200", _("MCTN") + "::120",
 		_("Currency") + ":Link/Currency:160", _("Posting Date") + ":Date:90", 
-		_("Withdraw") + "::100", _("Deposit") + "::100", _("Transections Desc") + "::400"
+		_("Withdraw") + "::100", _("Deposit") + "::100", _("Transactions Desc") + "::400"
 	]
 
 	return columns
@@ -39,40 +38,24 @@ def get_result(filters):
 	return result
 
 def get_transactions_entries(filters):
-	select_fields = """, sum(debit_in_account_currency) as debit_in_account_currency,
-		sum(credit_in_account_currency) as credit_in_account_currency""" \
-		if filters.get("show_in_account_currency") else ""
 
-	group_by_condition = "group by voucher_type, voucher_no, account, cost_center" \
-		if filters.get("group_by_voucher") else "group by name"
-
-	transaction_entries = frappe.db.sql("""
-		select
-			`tabTransaction Details`.docstatus, `tabUser`.full_name,
-			`tabTransaction Details`.mctn, `tabTransaction Details`.currency
-			posting_date, account, party_type, party,
-			sum(debit) as debit, sum(credit) as credit,
-			voucher_type, voucher_no, cost_center, project,
-			remarks
-		from `tabGL Entry`
-		where company=%(company)s
-		order by posting_date, account"""\
-		.format(select_fields=select_fields), filters, as_dict=1)
+	transaction_entries = frappe.db.sql("""select td.docstatus, tu.full_name, td.mctn, td.currency,
+			td.posting_date, td.outflow, td.inflow, td.description
+		from `tabTransactions Details` td, `tabAgents` ta, `tabUser` tu
+		WHERE td.user_id = ta.agent_user
+		AND ta.agent_user = tu.email AND td.user_id = %(username)s
+		AND td.posting_date BETWEEN %(from_date)s AND %(to_date)s
+		ORDER BY tu.full_name ASC""", filters, as_dict=1)
 
 	return transaction_entries
 	
 def get_result_as_list(data, filters):
 	result = []
 	for d in data:
-		row = [d.get("docstatus"), d.get("account"), d.get("debit"), d.get("credit")]
-
-		if filters.get("show_in_account_currency"):
-			row += [d.get("debit_in_account_currency"), d.get("credit_in_account_currency")]
-
-		row += [d.get("voucher_type"), d.get("voucher_no"), d.get("against"),
-			d.get("party_type"), d.get("party"), d.get("project"), d.get("cost_center"), d.get("remarks")
+		row = [d.get("docstatus"), d.get("full_name"), d.get("mctn"), d.get("currency")]
+		row += [d.get("posting_date"), d.get("outflow"), d.get("inflow"),
+			d.get("description")
 		]
-
 		result.append(row)
 
 	return result

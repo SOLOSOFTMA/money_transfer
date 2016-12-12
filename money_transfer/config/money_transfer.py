@@ -100,6 +100,18 @@ def get_data():
 					"name": "OET Report TT",
 					"doctype": "Received TT"
 				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Send Money Yet to Withdraw",
+					"doctype": "Send Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Send TT Yet to Withdraw",
+					"doctype": "Send TT"
+				},
 			]
 		},
 		{
