@@ -25,11 +25,13 @@ class SendMoney(Document):
 			self.title = self.get_title()
 		if not self.send_by:
 			self.send_by = self.get_send_by()
+
 	
 	def get_send_by(self):
 		return self.owner
 		
 		self.set_manual_mctn()
+			
 	
 	def set_manual_mctn(self):
 		if self.manual_mctn and not self.mctn:
@@ -56,6 +58,12 @@ class SendMoney(Document):
 					raise_exception=1)
 		
 	def validate_sender_details(self):
+		if not self.receiver_to:
+			msgprint(_("To is Manadory").format(self.purpose),
+					raise_exception=1)
+		if not self.receiver_to_location:
+			msgprint(_("Location is Manadory").format(self.purpose),
+					raise_exception=1)
 		if not self.purpose:
 			msgprint(_("Purpose of Payment is Manadory").format(self.purpose),
 					raise_exception=1)
