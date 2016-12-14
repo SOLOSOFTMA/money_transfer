@@ -17,11 +17,10 @@ class TransferfromBanktoVault(Document):
 		
 	def make_trxn_entries_in(self):
 		doc = frappe.new_doc("Transactions Details")
-		user = frappe.get_doc("Agents", frappe.session.user)
 		doc.update({
 					"user_id": frappe.session.user,
 					"posting_date": self.transfer_date,
-					"currency": account.account_currency,
+					"currency": "TOP",
 					"description": self.doctype,
 					"inflow": self.transfer_amount,
 					"mctn": self.name
