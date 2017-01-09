@@ -59,11 +59,6 @@ class SendMoney(Document):
 		
 	def validate_sender_details(self):
 	
-		if not self.reference:
-			if self.sender_from_country == "New Zealand":
-				if self.sender_from_location not in ("Hastings", "Nelson", "Otahuhu"):
-					msgprint(_("Please make sure to Deposit the funds to the Bank and input the Bank reference").format(self.purpose),
-					raise_exception=1)
 		if not self.receiver_to:
 			msgprint(_("To is Manadory").format(self.purpose),
 					raise_exception=1)
