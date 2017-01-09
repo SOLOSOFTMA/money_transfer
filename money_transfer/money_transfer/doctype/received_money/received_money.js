@@ -129,7 +129,7 @@ frappe.ui.form.on('Received Money', {
 							cur_frm.set_value("sender_agents", data.message["sender_agents"]);
 							cur_frm.set_value("sender_user_id", data.message["send_by"]);
 							
-			//				cur_frm.set_value("receiver_to", data.message["receiver_to"]);
+							cur_frm.set_value("reference", data.message["reference"]);
 							cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
 							cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
 							cur_frm.set_value("received_currency", data.message["received_currency"]);
