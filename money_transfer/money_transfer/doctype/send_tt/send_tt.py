@@ -31,7 +31,7 @@ class SendTT(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
-		self.del_transactions()
+		
 	
 	def del_transactions(self):
 		frappe.db.sql("""Update `tabTransactions Details` set docstatus=2 where mctn = %s""", self.name)
@@ -58,6 +58,7 @@ class SendTT(Document):
 	
 	def on_cancel(self):
 		self.make_gl_entries(1)
+		self.del_transactions()
 	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries		
@@ -72,6 +73,7 @@ class SendTT(Document):
 					"account_currency": self.sender_currency,
 					"debit": self.amount_send,
 					"voucher_type": self.doctype,
+					"party": self.sender_name,
 					"voucher_no": self.name,
 					"against": "Cash in Till - T&T",
 					"remarks": "Send Money Transaction"
