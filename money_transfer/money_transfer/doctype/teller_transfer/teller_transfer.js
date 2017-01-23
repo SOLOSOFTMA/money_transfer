@@ -7,8 +7,8 @@ frappe.ui.form.on('Teller Transfer', {
 	},
 	
 	onload: function(frm) {
-	if (frm.doc.workflow_state != "Pending Approval"){
-	  var today = get_today()
+	if (frm.doc.docstatus != 1){
+		  var today = get_today()
 	  frm.set_value("transfer_date", today);
 
 	  var Current_User = user;
@@ -27,6 +27,13 @@ frappe.ui.form.on('Teller Transfer', {
 					}
 					});
 	 } 
+	 frm.set_query("transfer_to_agent", function() {
+				return {
+					"filters": { 
+							'agents_enabled': ["=", 1],
+					}
+				};
+			});
 	}
 	}
 });
