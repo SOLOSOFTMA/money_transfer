@@ -54,8 +54,6 @@ class ReceivedTT(Document):
 				"credit": self.amount_received,
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
-				"party_type": "Customer",
-				"party": self.sender_name,
 				"against": Account,
 				"remarks": "Withdraw Money Transaction"
             }))
@@ -66,8 +64,6 @@ class ReceivedTT(Document):
 				"posting_date": self.posting_date,
 				"transaction_date": self.withdraw_date,
 				"debit": self.amount_received,
-				"party_type": "Customer",
-				"party": self.sender_name,
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
                 "remarks": "Withdraw Money Transaction"

@@ -14,6 +14,8 @@ frappe.ui.form.on('Send Money', {
 
 	onload: function(frm) {
 		
+		
+		
 //		if (frm.doc.workflow_state != "UnAuthorised"){
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
@@ -57,7 +59,7 @@ frappe.ui.form.on('Send Money', {
 		frm.set_query("receiver_to_location", function() {
 			return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
 		});
-			
+	
 	},
 	
 	convert_top : function(frm){
