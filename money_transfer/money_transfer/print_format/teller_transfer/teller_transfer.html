@@ -1,0 +1,61 @@
+
+{%- from "templates/print_formats/standard_macros.html" import add_header -%}
+<!---------------------------------------------------->
+<div class="row">
+
+	<div class="col-xs-12">
+	<div class="panel">
+			<div class="col-xs-3"><img src="/files/Logo.png" style="font-size: 14px; line-height: 1.42857;"></div>
+			<div class="col-xs-6"><h3>T&T Money Transfer</h3></div>
+			<div class="col-xs-6"><p>{{ doc.name }}</p></div>
+	</div>
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-xs-6">
+	{%- for label, value in (
+		(_("FROM"), doc.transfer_from_agent),
+		(_("Date"), frappe.utils.formatdate(doc.postin_date))
+    ) -%}
+    <div class="row">
+			<div class="col-xs-4"><label class="text-right">{{ label }}</label></div>
+			<div class="col-xs-8">{{ value }}</div>	
+	</div>
+	{%- endfor -%}	
+	</div>
+		<div class="col-xs-6">
+	{%- for label, value in (
+		(_("TO"), doc.transfer_to_agent),
+		(_("Amount"),  frappe.utils.fmt_money(doc.transfer_amount))
+				) -%}
+    <div class="row">
+			<div class="col-xs-4"><label class="text-right">{{ label }}</label></div>
+			<div class="col-xs-8">{{ value }}</div>	
+	</div>
+	{%- endfor -%}	
+	</div>
+	
+	</div>
+<hr>
+<br>
+<br>
+	<div class="col-xs-12">
+	
+		 <div class="row">
+			<div class="col-xs-4"><label class="text-left">{{ _("Authorise by : ") }}</label></div>
+			<div class="col-xs-8">{{ _("__________________________________________________") }}</div>				
+		</div>
+	</div>
+
+
+<div class="col-xs-12">
+<br>	
+<br>
+<hr>
+<p class="small text-justify">This is for Internal use only.</p>
+<p class="small text-justify">
+<br>
+T&T Money Transfer | Taufaahau Road, Sii Kae Ola Building | Ph : 21480 | email : tnt@paluaviationt.to</p>
+</div>
+</div>
