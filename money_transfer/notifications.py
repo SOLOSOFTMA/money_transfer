@@ -9,6 +9,7 @@ def get_notification_config():
 		"for_doctype": {
 			"Money Transfer": {"docstatus": 0},
 			"Send Money": {"docstatus": 0},
+			"Received Money": {"docstatus": 0},
 			"Send TT": {"docstatus": 0},
 			"Received TT": {"docstatus": 0},
 			"Transfer to Vault": {"docstatus": 0},
