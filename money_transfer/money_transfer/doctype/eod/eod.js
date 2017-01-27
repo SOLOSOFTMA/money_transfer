@@ -6,11 +6,12 @@ frappe.ui.form.on('EOD', {
 
 		},
 		onload: function(frm) {
-			if (frm.doc.docstatus != 1) {
+			if(frm.doc.docstatus!=1){
+				if (!frm.doc.eod_today) {
 			  frm.set_value("eod_today", get_today());
+				}
 			}
-		}
-	
+		},
 });
 frappe.ui.form.on("EOD", "eod_nextday", function(frm) {
 	var p = frm.doc;

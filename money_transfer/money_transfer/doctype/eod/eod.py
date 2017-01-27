@@ -20,6 +20,7 @@ class EOD(Document):
 		self.empty_temp_table()
 		self.update_posting_date()
 		self.update_opening_balance()
+		self.update_status()
 		
 	def check_eod_Maintenance(self):
 		if not self.eod_check:
@@ -50,3 +51,6 @@ class EOD(Document):
 		
 	def update_opening_balance(self):
 		frappe.db.sql("""Update `tabTransactions Details` set inflow="0.00" where currency in ("NZD","AUD")""")
+	
+	def update_status(self):
+			frappe.db.sql("""Update `tabEOD` set docstatus=1 where eod_today = %s""", self.eod_today)
