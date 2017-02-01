@@ -20,7 +20,10 @@ class EOD(Document):
 		self.empty_temp_table()
 		self.update_posting_date()
 		self.update_opening_balance()
+		self.update_description()
+		self.update_docstatus()
 		self.update_status()
+		
 		
 	def check_eod_Maintenance(self):
 		if not self.eod_check:
@@ -40,7 +43,7 @@ class EOD(Document):
 		frappe.db.sql("""delete from `tabTransactions Details`""")
 	
 	def insert_Opening_Bal(self):	
-		frappe.db.sql("""insert into `tabTransactions Details` (name, user_id, currency, posting_date, inflow, description) select name, user_id, 
+		frappe.db.sql("""insert into `tabTransactions Details` (name, creation, modified_by, owner, user_id, currency, posting_date, inflow, description) select name, posting_date-1, user_id, user_id, user_id, 
 		currency, posting_date, inflow, description from `tabTemp`""")
 		
 	def empty_temp_table(self):	
@@ -48,6 +51,12 @@ class EOD(Document):
 	
 	def update_posting_date(self):
 		frappe.db.sql("""Update `tabTransactions Details` set posting_date = %s""", self.eod_nextday)
+	
+	def update_description(self):
+		frappe.db.sql("""Update `tabTransactions Details` set description="Opening Balance" """)
+	
+	def update_docstatus(self):
+		frappe.db.sql("""Update `tabTransactions Details` set docstatus=1 """)
 		
 	def update_opening_balance(self):
 		frappe.db.sql("""Update `tabTransactions Details` set inflow="0.00" where currency in ("NZD","AUD")""")

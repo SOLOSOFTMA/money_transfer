@@ -56,9 +56,6 @@ frappe.ui.form.on('Send Money', {
 	},
 	
 	refresh: function(frm) {
-	//	if(frm.doc.docstatus==1) {
-	//		frm.add_custom_button(__('Refund'));
-	//	}
 		frm.set_query("receiver_to_location", function() {
 			return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
 		});

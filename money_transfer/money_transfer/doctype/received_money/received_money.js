@@ -64,6 +64,13 @@ frappe.ui.form.on('Received Money', {
 		
 	},
 	refresh: function(frm) {
+		if (frm.doc.docstatus == 1 && frm.doc.purpose == "Shopping" && !frm.doc.pickup_shopping) {
+			frm.add_custom_button(__('Shopping Update'), function() {
+				cur_frm.set_value("pickup_shopping", 1);
+				cur_frm.set_value("pickup_date", today);
+						
+			});
+		}
 		if (frm.doc.docstatus != 1){
 			var Current_User = user;
 			if (Current_User != "Administrator"){

@@ -23,8 +23,9 @@ class ReceivedMoney(Document):
 		self.validate_agent()
 	
 	def validate_agent(self):
-		if self.received_agent == self.sender_user_id:
-			msgprint(_("You are not Authorise to Withdraw this transaction").format(self.mctn),
+		if self.docstatus == 0:
+			if self.received_agent == self.sender_user_id:
+				msgprint(_("You are not Authorise to Withdraw this transaction").format(self.mctn),
 					raise_exception=1)
 	
 	def validate_Denomination(self):		
