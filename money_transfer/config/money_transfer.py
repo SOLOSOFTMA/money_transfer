@@ -85,6 +85,12 @@ def get_data():
 				{
 					"type": "report",
 					"is_query_report": True,
+					"name": "Tellers Details Report Today",
+					"doctype": "Send Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
 					"name": "Tellers Details Report",
 					"doctype": "Send Money"
 				},
@@ -95,18 +101,7 @@ def get_data():
 					"name": "Tellers Summary Report",
 					"doctype": "Transactions Details"
 				},
-				{
-					"type": "report",
-					"is_query_report": True,
-					"name": "OET Report",
-					"doctype": "Received Money"
-				},
-				{
-					"type": "report",
-					"is_query_report": True,
-					"name": "OET Report TT",
-					"doctype": "Received TT"
-				},
+				
 				{
 					"type": "report",
 					"is_query_report": True,
@@ -118,6 +113,23 @@ def get_data():
 					"is_query_report": True,
 					"name": "Send TT Yet to Withdraw",
 					"doctype": "Send TT"
+				},
+			]
+		},
+		{
+			"label": _("OET"),
+			"items": [
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "OET Report",
+					"doctype": "Received Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "OET Report TT",
+					"doctype": "Received TT"
 				},
 			]
 		},
