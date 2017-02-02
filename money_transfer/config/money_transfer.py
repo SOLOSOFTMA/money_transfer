@@ -141,6 +141,18 @@ def get_data():
 					"name": "Item",
 					"description": _("Products."),
 				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Shopping Transactions List",
+					"doctype": "Received Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Shopping Pickup List",
+					"doctype": "Received Money"
+				},
 			]
 		},
 		{

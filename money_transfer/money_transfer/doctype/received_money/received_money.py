@@ -26,7 +26,7 @@ class ReceivedMoney(Document):
 		if self.docstatus == 0:
 			if self.received_agent == self.sender_user_id:
 				msgprint(_("You are not Authorise to Withdraw this transaction").format(self.mctn),
-					raise_exception=1)
+					raise_exception=1)			
 	
 	def validate_Denomination(self):		
 		teller = frappe.get_doc("Agents", self.receiver_agents)
@@ -42,7 +42,8 @@ class ReceivedMoney(Document):
 		self.make_gl_entries()
 		self.make_trxn_entries()
 		self.update_tabSend_Received_Status()
-	
+		
+		
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries
 		

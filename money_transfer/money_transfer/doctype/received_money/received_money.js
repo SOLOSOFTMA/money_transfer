@@ -2,6 +2,7 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received Money', {
+	
 	setup: function(frm) {
 		
 		frm.get_field('deno_details').grid.editable_fields = [
@@ -21,6 +22,8 @@ frappe.ui.form.on('Received Money', {
 
 	onload: function(frm) {
 		var Current_User = user;
+		
+		if (frm.doc.docstatus != 1){
 
 		frappe.call({
 			method:"frappe.client.get",
@@ -42,7 +45,7 @@ frappe.ui.form.on('Received Money', {
 			}
 			}
 			})
-
+		}
 		
 		if (frm.doc.docstatus != 1){
 			var today = get_today()
@@ -64,10 +67,10 @@ frappe.ui.form.on('Received Money', {
 		
 	},
 	refresh: function(frm) {
-		if (frm.doc.docstatus == 1 && frm.doc.purpose == "Shopping" && !frm.doc.pickup_shopping) {
+		if (frm.doc.docstatus == 1 && frm.doc.purpose == "Shopping" && user_roles.indexOf("Sales Manager")!=-1 && !frm.doc.pickup_shopping) {
 			frm.add_custom_button(__('Shopping Update'), function() {
-				cur_frm.set_value("pickup_shopping", 1);
-				cur_frm.set_value("pickup_date", today);
+				frm.set_value("pickup_shopping", 1);
+				frm.set_value("pickup_date",  get_today());
 						
 			});
 		}
