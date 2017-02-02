@@ -71,6 +71,11 @@ def get_data():
 					"name": "Transfer from Bank to Vault",
 					"description": _("Transfer from Bank to Vault."),
 				},
+				{
+					"type": "doctype",
+					"name": "Transfer from Vault to Bank",
+					"description": _("Transfer from Vault to Bank."),
+				},
 			]
 		},
 		{
