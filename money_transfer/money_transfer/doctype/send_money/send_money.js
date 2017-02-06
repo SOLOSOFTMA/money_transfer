@@ -14,8 +14,6 @@ frappe.ui.form.on('Send Money', {
 
 	onload: function(frm) {
 		
-		
-		
 //		if (frm.doc.workflow_state != "UnAuthorised"){
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
@@ -56,9 +54,19 @@ frappe.ui.form.on('Send Money', {
 	},
 	
 	refresh: function(frm) {
+		
+		
 		frm.set_query("receiver_to_location", function() {
 			return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
 		});
+		
+		if (frm.doc.docstatus == 1 ) {
+			frm.add_custom_button(__('Refund'), function() {
+				frm.set_value("pickup_shopping", 1);
+				frm.set_value("pickup_date",  get_today());
+						
+			});
+		}
 	
 	},
 	
@@ -182,6 +190,8 @@ frappe.ui.form.on('Send Money', {
 				}
 		});
 		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
+			var today = get_today();
+			
 			frm.set_value("multicurrency", 1);
 				frappe.call({
 						"method": "frappe.client.get",
@@ -189,8 +199,10 @@ frappe.ui.form.on('Send Money', {
 							doctype: "Currency Exchange",
 							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
 									  'from_currency': frm.doc.sender_currency,
-									  'to_currency': frm.doc.received_currency},
-						},
+									  'to_currency': frm.doc.received_currency
+									  }
+									  },
+									  
 						callback: function (data) {
 							
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);

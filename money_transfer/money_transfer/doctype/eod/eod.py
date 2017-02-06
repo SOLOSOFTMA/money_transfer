@@ -17,9 +17,9 @@ class EOD(Document):
 		self.insert_record()
 		self.empty_transactions()
 		self.insert_Opening_Bal()
-		self.empty_temp_table()
 		self.update_posting_date()
 		self.update_opening_balance()
+		self.empty_temp_table()
 		self.update_description()
 		self.update_docstatus()
 		self.update_status()
@@ -30,8 +30,8 @@ class EOD(Document):
 			msgprint(_("Please make sure EOD Maintenance is Check"))
 			
 	def save_to_temp_table(self):	
-		frappe.db.sql("""insert into `tabTemp` (user_id, currency, posting_date, inflow) select
-		user_id, currency, posting_date, sum(inflow - outflow) as Total
+		frappe.db.sql("""insert into `tabTemp` (name, user_id, currency, posting_date, inflow) select
+		concat(user_id, '-', convert(posting_date,char(10))), user_id, currency, posting_date, sum(inflow - outflow) as Total
 		from `tabTransactions Details` GROUP BY user_id DESC, currency ASC""")
 	
 	def insert_record(self):	
@@ -46,7 +46,7 @@ class EOD(Document):
 		frappe.db.sql("""insert into `tabTransactions Details` (name, creation, modified_by, owner, user_id, currency, posting_date, inflow, description) select name, posting_date-1, user_id, user_id, user_id, 
 		currency, posting_date, inflow, description from `tabTemp`""")
 		
-	def empty_temp_table(self):	
+	def empty_temp_table(self):
 		frappe.db.sql("""delete from `tabTemp`""")
 	
 	def update_posting_date(self):
