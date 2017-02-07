@@ -63,6 +63,11 @@ def get_data():
 				},
 				{
 					"type": "doctype",
+					"name": "Currency Exchange",
+					"description": _("Currency exchange rate master.")
+				},
+				{
+					"type": "doctype",
 					"name": "Location",
 					"description": _("Location."),
 				},
