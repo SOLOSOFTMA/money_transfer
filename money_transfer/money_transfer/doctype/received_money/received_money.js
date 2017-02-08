@@ -168,7 +168,6 @@ frappe.ui.form.on('Received Money', {
 								cur_frm.set_df_property("total_denomination", "read_only", 1);
 								
 							}								
-				}
 			})
 			
 	},	
