@@ -128,8 +128,6 @@ frappe.ui.form.on('Received Money', {
 							},	
 						},
 						callback: function (data) {
-							var withdraw = (data.message["withdraw_status"]);
-							if (withdraw != 1){
 								cur_frm.set_value("company", data.message["company"]);
 								cur_frm.set_value("multicurrency", data.message["multicurrency"]);
 								cur_frm.set_value("purpose", data.message["purpose"]);
@@ -169,13 +167,7 @@ frappe.ui.form.on('Received Money', {
 								cur_frm.set_df_property("sender_details", "read_only", 1);
 								cur_frm.set_df_property("total_denomination", "read_only", 1);
 								
-							}
-							else if (withdraw == 1)
-								{
-									frappe.reload_doctype("Received Money");
-								}
-
-								
+							}								
 				}
 			})
 			

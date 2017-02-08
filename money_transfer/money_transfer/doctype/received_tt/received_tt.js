@@ -94,9 +94,8 @@ frappe.ui.form.on('Received TT', {
 						"method": "frappe.client.get",
 						args: {
 							doctype: "Send TT",
-							filters: {'name': frm.doc.mctn,
-							'docstatus': 1},
-							name: frm.doc.sender_from
+							name: frm.doc.mctn,
+							filters: {'docstatus': 1}
 						},
 						callback: function (data) {
 							cur_frm.set_value("company", data.message["company"]);
