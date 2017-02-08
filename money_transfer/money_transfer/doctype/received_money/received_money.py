@@ -21,6 +21,8 @@ class ReceivedMoney(Document):
 			self.received_transaction_status = 'Withdraw'
 		self.validate_Denomination()
 		self.validate_agent()
+		if not self.mctn:
+			self.mctn = self.title
 	
 	def validate_agent(self):
 		if self.docstatus == 0:
@@ -37,7 +39,7 @@ class ReceivedMoney(Document):
 			
 	def get_title(self):
 		return self.mctn
-	
+		
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
