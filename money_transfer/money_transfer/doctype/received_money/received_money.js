@@ -21,8 +21,61 @@ frappe.ui.form.on('Received Money', {
 	},
 
 	onload: function(frm) {
-		var Current_User = user;
 		
+		frappe.call({
+			"method": "frappe.client.get",
+						args: {
+							doctype: "Send Money",
+							name: frm.doc.mctn,
+							filters: {
+								'docstatus' : 1
+							},	
+						},
+						callback: function (data) {
+								cur_frm.set_value("company", data.message["company"]);
+								cur_frm.set_value("multicurrency", data.message["multicurrency"]);
+								cur_frm.set_value("purpose", data.message["purpose"]);
+								cur_frm.set_value("sender_from", data.message["sender_from"]);
+								cur_frm.set_value("sender_from_country", data.message["sender_from_country"]);
+								cur_frm.set_value("sender_from_location", data.message["sender_from_location"]);
+								cur_frm.set_value("sender_currency", data.message["sender_currency"]);
+								cur_frm.set_value("sender_agents", data.message["sender_agents"]);
+								cur_frm.set_value("sender_user_id", data.message["send_by"]);
+								
+								cur_frm.set_value("reference", data.message["reference"]);
+								cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
+								cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
+								cur_frm.set_value("received_currency", data.message["received_currency"]);
+	//							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
+								cur_frm.set_value("amount_send", data.message["amount_send"]);
+								cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
+								cur_frm.set_value("fees", data.message["fees"]);
+								cur_frm.set_value("fees_amount", data.message["fees_amount"]);
+								cur_frm.set_value("total_amount_paid", data.message["total_amount_paid"]);
+								cur_frm.set_value("sender_name", data.message["sender_name"]);
+								cur_frm.set_value("sender_id_type", data.message["sender_id_type"]);
+								cur_frm.set_value("sender_id_no", data.message["sender_id_no"]);
+								cur_frm.set_value("sender_details", data.message["sender_details"]);
+								cur_frm.set_value("sender_agents_account", data.message["sender_agents_account"]);
+								cur_frm.set_value("receiver_agents_account", data.message["receiver_agent_account"]);
+								cur_frm.set_value("receiver_name", data.message["receiver_name"]);
+								cur_frm.set_value("receiver_details", data.message["receiver_details"]);
+								cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);	
+								cur_frm.set_value("amount_received", data.message["amount_received"]);
+								cur_frm.set_df_property("mctn", "read_only", 1);
+								cur_frm.set_df_property("purpose", "read_only", 1);
+								cur_frm.set_df_property("sender_from_country", "read_only", 1);
+								cur_frm.set_df_property("exchange_rate", "read_only", 1);
+								cur_frm.set_df_property("amount_send", "read_only", 1);
+								cur_frm.set_df_property("sender_name", "read_only", 1);
+								cur_frm.set_df_property("sender_details", "read_only", 1);
+								cur_frm.set_df_property("total_denomination", "read_only", 1);
+								
+							}								
+			})
+		
+		
+		var Current_User = user;
 		if (frm.doc.docstatus != 1){
 
 		frappe.call({
@@ -116,61 +169,11 @@ frappe.ui.form.on('Received Money', {
 		});
 	},
 
-	mctn: function(frm) {
-		cur_frm.set_value("sender_from", "");
-				frappe.call({
-						"method": "frappe.client.get",
-						args: {
-							doctype: "Send Money",
-							name: frm.doc.mctn,
-							filters: {
-								'docstatus' : 1
-							},	
-						},
-						callback: function (data) {
-								cur_frm.set_value("company", data.message["company"]);
-								cur_frm.set_value("multicurrency", data.message["multicurrency"]);
-								cur_frm.set_value("purpose", data.message["purpose"]);
-								cur_frm.set_value("sender_from", data.message["sender_from"]);
-								cur_frm.set_value("sender_from_country", data.message["sender_from_country"]);
-								cur_frm.set_value("sender_from_location", data.message["sender_from_location"]);
-								cur_frm.set_value("sender_currency", data.message["sender_currency"]);
-								cur_frm.set_value("sender_agents", data.message["sender_agents"]);
-								cur_frm.set_value("sender_user_id", data.message["send_by"]);
-								
-								cur_frm.set_value("reference", data.message["reference"]);
-								cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
-								cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
-								cur_frm.set_value("received_currency", data.message["received_currency"]);
-	//							cur_frm.set_value("receiver_agents", data.message["receiver_agents"]);
-								cur_frm.set_value("amount_send", data.message["amount_send"]);
-								cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-								cur_frm.set_value("fees", data.message["fees"]);
-								cur_frm.set_value("fees_amount", data.message["fees_amount"]);
-								cur_frm.set_value("total_amount_paid", data.message["total_amount_paid"]);
-								cur_frm.set_value("sender_name", data.message["sender_name"]);
-								cur_frm.set_value("sender_id_type", data.message["sender_id_type"]);
-								cur_frm.set_value("sender_id_no", data.message["sender_id_no"]);
-								cur_frm.set_value("sender_details", data.message["sender_details"]);
-								cur_frm.set_value("sender_agents_account", data.message["sender_agents_account"]);
-								cur_frm.set_value("receiver_agents_account", data.message["receiver_agent_account"]);
-								cur_frm.set_value("receiver_name", data.message["receiver_name"]);
-								cur_frm.set_value("receiver_details", data.message["receiver_details"]);
-								cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);	
-								cur_frm.set_value("amount_received", data.message["amount_received"]);
-								
-								cur_frm.set_df_property("purpose", "read_only", 1);
-								cur_frm.set_df_property("sender_from_country", "read_only", 1);
-								cur_frm.set_df_property("exchange_rate", "read_only", 1);
-								cur_frm.set_df_property("amount_send", "read_only", 1);
-								cur_frm.set_df_property("sender_name", "read_only", 1);
-								cur_frm.set_df_property("sender_details", "read_only", 1);
-								cur_frm.set_df_property("total_denomination", "read_only", 1);
-								
-							}								
-			})
+//	mctn: function(frm) {
+//		cur_frm.set_value("sender_from", "");
+				
 			
-	},	
+//	},	
 });
 
 

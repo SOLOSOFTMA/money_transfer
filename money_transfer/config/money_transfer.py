@@ -16,6 +16,11 @@ def get_data():
 					"name": "Send TT",
 					"description": _("Send TT."),
 				},
+				{
+					"type": "doctype",
+					"name": "Refund",
+					"description": _("Refund."),
+				},
 			]
 		},
 		{

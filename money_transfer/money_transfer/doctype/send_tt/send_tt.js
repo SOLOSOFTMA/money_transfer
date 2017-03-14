@@ -18,13 +18,14 @@ frappe.ui.form.on('Send TT', {
 									filters: {'agent_user': Current_User},
 									name: frm.doc.sender_from
 								},
-								callback: function (data) {
+								callback: function (data) {									
 									cur_frm.set_value("sender_from", data.message["name"]);
 									cur_frm.set_value("sender_currency", data.message["agents_currency"]);
 									cur_frm.set_value("sender_city_code", data.message["agents_city_code"]);
 									cur_frm.set_value("sender_agents_account", data.message["agent_account"]);
 									cur_frm.set_value("sender_fees_account", data.message["agent_fees_account"]);
 									cur_frm.set_value("sender_cost_center", data.message["agent_cost_center"]);
+									
 						}
 				})
 			} 
@@ -37,7 +38,33 @@ frappe.ui.form.on('Send TT', {
 				"filters": { "country": ["=", frm.doc.receiver_to],
 							"City" : ["!=", frm.doc.sender_from_location]}
 			};
-			});
+		});		
+		var Current_User = user;
+		  if (Current_User != "Administrator"){
+						frappe.call({
+								"method": "frappe.client.get",
+								args: {
+									doctype: "Agents",
+									filters: {'agent_user': Current_User},
+								},
+								callback: function (data) {	
+								var user_location =(data.message["agents_location"]);
+								var user_country = (data.message["agents_country"]);									
+								 if (frm.doc.withdraw_status != 1 && frm.doc.docstatus == 1 && frm.doc.receiver_to_location == user_location) {
+									frm.add_custom_button(__('Withdraw'), function() {
+									frappe.route_options = {
+														"mctn": frm.doc.name
+														}
+									frappe.new_doc("Received TT");
+									frappe.set_route("Form", "Received TT", doc.name);
+									});
+								}
+								
+									
+						}
+				})								
+		}
+		
 			
 	},
 	

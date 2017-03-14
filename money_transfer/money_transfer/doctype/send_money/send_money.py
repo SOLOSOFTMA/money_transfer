@@ -89,6 +89,7 @@ class SendMoney(Document):
 	
 	def del_transactions(self):
 		frappe.db.sql("""Update `tabTransactions Details` set docstatus=2 where mctn = %s""", self.name)
+		frappe.db.sql("""Update `tabTransactions History` set docstatus=2 where mctn = %s""", self.name)
 	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries	

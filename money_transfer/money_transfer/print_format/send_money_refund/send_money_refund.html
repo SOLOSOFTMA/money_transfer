@@ -20,7 +20,7 @@
 	<div class="col-xs-6">
 	{%- for label, value in (
 		(_("MTCN"), doc.mctn),
-		(_("Date"), frappe.utils.formatdate(doc.withraw_date))
+		(_("Date"), frappe.utils.formatdate(doc.cashout_date))
     ) -%}
     <div class="row">
 			<div class="col-xs-4"><label class="text-right">{{ label }}</label></div>
@@ -31,7 +31,7 @@
 	<div class="col-xs-6">
 		 <div class="row">
 			<div class="col-xs-4"><label class="text-left">{{ _("Teller : ") }}</label></div>
-			<div class="col-xs-8">{{ doc.received_agent_name }}</div>				
+			<div class="col-xs-8">{{ doc.refund_by }}</div>				
 	</div>
 	</div>
 
@@ -45,11 +45,8 @@
         (_("Full Name:"), doc.sender_name),
         (_("ID Type"), doc.sender_id_type),
 		(_("ID No"), doc.sender_id_no),
-		(_("Amount"), frappe.utils.fmt_money(doc.amount_send)),
-		(_("Currency"), doc.sender_currency),
-		(_("Ex Rate"), doc.exchange_rate)
-		
-		
+		(_("Refund Type"), doc.refund),
+		(_("Refund Amount"), frappe.utils.fmt_money(doc.amount_send))
     ) -%}
     <div class="row">
 			<div class="col-xs-4"><label class="text-right">{{ label }}</label></div>
@@ -61,23 +58,6 @@
 	</div>
 	<div class="col-xs-6">
 		<div class="panel">
-		<h5>Receiver Details</h5>
-   {%- for label, value in (
-        (_("Full Name :"), doc.receiver_name),
-        (_("ID Type"), doc.receiver_id_type),
-		(_("ID No"), doc.receiver_id_no),
-		(_("Amount"), frappe.utils.fmt_money(doc.amount_received)),
-		(_("Currency"), doc.received_currency)
-		
-		
-    ) -%}
-	<div class="row">
-
-			<div class="col-xs-4"><label class="text-right">{{ label }}</label></div>
-			<div class="col-xs-8">{{ value }}</div>
-
-	</div>
-    {%- endfor -%}
 		</div>
 	</div>
 </div>
@@ -86,7 +66,7 @@
 				<div class="col-xs-5">{{ _("Customer Signature : ") }}</div>
 				<div class="col-xs-7">{{ _("_______________________________") }}</div>
 				<div class="col-xs-5"></div>
-				<div class="col-xs-7">{{ doc.receiver_name }}</div>
+				<div class="col-xs-7">{{ doc.sender_name }}</div>
 		</div>
 <div class="col-xs-12">
 <br>	
@@ -104,4 +84,4 @@ Thank you for using  T&T Money Transfer. Please visit us again<br>
 T&T Money Transfer | Taufaahau Road, Sii Kae Ola Building | Ph : 21480 | email : tnt@paluaviationt.to</p>
 </div>
 </div>
-{%- endif -%}
+    {%- endif -%}

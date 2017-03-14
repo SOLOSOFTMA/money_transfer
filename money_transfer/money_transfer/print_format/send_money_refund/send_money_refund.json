@@ -1,0 +1,17 @@
+{
+ "creation": "2016-10-14 05:49:55.292089", 
+ "custom_format": 1, 
+ "disabled": 0, 
+ "doc_type": "Send Money", 
+ "docstatus": 0, 
+ "doctype": "Print Format", 
+ "font": "Default", 
+ "idx": 0, 
+ "modified": "2016-10-14 05:49:59.392269", 
+ "modified_by": "Administrator", 
+ "name": "Send Money Receipt", 
+ "owner": "Administrator", 
+ "print_format_builder": 0, 
+ "print_format_type": "Server", 
+ "standard": "Yes"
+}

@@ -1,6 +1,11 @@
 
 {%- from "templates/print_formats/standard_macros.html" import add_header -%}
 <!---------------------------------------------------->
+{%- if doc.meta.is_submittable and doc.docstatus==0-%}
+<div class="alert alert-info text-center">
+		<h4 style="margin: 0px;">{{ _("DRAFT") }}</h4>
+</div>
+{%- elif doc.meta.is_submittable and doc.docstatus==1-%}
 <div class="row">
 
 	<div class="col-xs-12">
@@ -122,3 +127,4 @@ Thank you for using  T&T Money Transfer. Please visit us again<br>
 T&T Money Transfer | Taufaahau Road, Sii Kae Ola Building | Ph : 21480 | email : tnt@paluaviationt.to</p>
 </div>
 </div>
+{%- endif -%}

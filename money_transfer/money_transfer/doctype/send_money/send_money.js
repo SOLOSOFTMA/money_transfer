@@ -2,6 +2,7 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Send Money', {
+	
 	setup: function(frm) {
 		frm.get_field('product_table').grid.editable_fields = [
 			{fieldname: 'item_code', columns: 2},
@@ -13,7 +14,7 @@ frappe.ui.form.on('Send Money', {
 	},
 
 	onload: function(frm) {
-		
+			
 //		if (frm.doc.workflow_state != "UnAuthorised"){
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
@@ -27,7 +28,6 @@ frappe.ui.form.on('Send Money', {
 		  }
 		 
 		  var Current_User = user;
-//		  frm.set_value("send_by", Current_User);
 		  if (Current_User != "Administrator"){
 			  cur_frm.set_value("sender_from", "");
 						frappe.call({
@@ -49,26 +49,52 @@ frappe.ui.form.on('Send Money', {
 						}
 				})
 			} 
-		}
-		
+		}	
 	},
-	
+
 	refresh: function(frm) {
-		
-		
-		frm.set_query("receiver_to_location", function() {
-			return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
-		});
-		
-		if (frm.doc.docstatus == 1 ) {
-			frm.add_custom_button(__('Refund'), function() {
-				frm.set_value("pickup_shopping", 1);
-				frm.set_value("pickup_date",  get_today());
-						
-			});
+		if(frm.doc.docstatus == 0) {
+//			cur_frm.appframe.buttons.Submit.remove();
+//			cur_frm.frm_head.appframe.clear_buttons('print');
 		}
-	
-	},
+		if (frm.doc.docstatus == 1 ) {
+			var Current_User = user;
+			frappe.call({
+					"method": "frappe.client.get",
+					args: {
+							doctype: "Agents",
+							filters: {'agent_user': Current_User},
+							},
+						callback: function (d) {
+							var user_location =(d.message["agents_location"]);
+							var user_country = (d.message["agents_country"]);
+							if (user_country == "Tonga" && frm.doc.withdraw_status != 1 && frm.doc.refund_status != 1 && frm.doc.docstatus == 1 && frm.doc.sender_from_location == user_location) {
+								frm.add_custom_button(__('Refund'), function(){
+								frappe.route_options = {
+														"mctn": frm.doc.name
+													}
+								frappe.new_doc("Refund");
+								frappe.set_route("Form", "Refund", doc.name);
+								});
+								}
+							
+						  if (frm.doc.withdraw_status != 1 && frm.doc.docstatus == 1 && frm.doc.receiver_to_location == user_location) {
+							 frm.add_custom_button(__('Withdraw'), function() {
+							 frappe.route_options = {
+												"mctn": frm.doc.name
+												}
+							frappe.new_doc("Received Money");
+							frappe.set_route("Form", "Received Money", doc.name);
+							});
+							}	
+						}
+					})
+				}
+		
+			frm.set_query("receiver_to_location", function() {
+				return {filters: { country: ["=", frm.doc.receiver_to], City: ["!=", frm.doc.sender_from_location]}};
+			});
+		},
 	
 	convert_top : function(frm){
 		var Convert_TOP = flt(frm.doc.shopping_total/frm.doc.exchange_rate);
@@ -228,6 +254,7 @@ frappe.ui.form.on('Send Money', {
 	}
 	
 });
+
 	
 	cur_frm.add_fetch('sender_from','agents_country','sender_from_country');
 	cur_frm.add_fetch('sender_from','agents_location','sender_from_location');
@@ -241,7 +268,7 @@ frappe.ui.form.on('Send Money', {
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
 
-
+	
 frappe.ui.form.on("Money Transfer Product", "item_code", function(frm, cdt, cdn){
 	var d = locals[cdt][cdn];
 	frappe.call({
@@ -279,3 +306,6 @@ var calculate_total_amount = function(frm){
 	frm.set_value("total_amount_paid", total_amount);
 		
 }
+
+
+
