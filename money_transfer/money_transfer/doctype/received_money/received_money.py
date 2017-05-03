@@ -11,7 +11,7 @@ from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
 
 class ReceivedMoney(Document):
-	
+
 	def validate(self):
 		if not self.title:
 			self.title = self.get_title()
@@ -23,32 +23,31 @@ class ReceivedMoney(Document):
 		self.validate_agent()
 		if not self.mctn:
 			self.mctn = self.title
-	
+
 	def validate_agent(self):
 		if self.docstatus == 0:
 			if self.received_agent == self.sender_user_id:
 				msgprint(_("You are not Authorise to Withdraw this transaction").format(self.mctn),
-					raise_exception=1)			
-	
-	def validate_Denomination(self):		
+					raise_exception=1)
+
+	def validate_Denomination(self):
 		teller = frappe.get_doc("Agents", self.receiver_agents)
 		if teller.teller_function == "Teller & Till" and self.purpose != "Shopping":
 			if self.amount_received != self.total_denomination:
 				msgprint(_("Please make sure that your Amount Received = Total").format(self.total_denomination),
 						raise_exception=1)
-			
+
 	def get_title(self):
 		return self.mctn
-		
+
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
 		self.update_tabSend_Received_Status()
-		
-		
+
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries
-		
+
 		gl_map = []
 		gl_map.append(
             frappe._dict({
@@ -76,7 +75,7 @@ class ReceivedMoney(Document):
 
 		if gl_map:
 			make_gl_entries(gl_map, cancel=cancel, adv_adj=adv_adj)
-	
+
 	def make_trxn_entries(self):
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
@@ -89,19 +88,19 @@ class ReceivedMoney(Document):
 				})
 		doc.insert()
 		doc.submit()
-		
+
 	def update_tabSend_Received_Status(self):
 		frappe.db.sql("""Update `tabSend Money` set withdraw_status="1" where name=%s""",self.mctn)
-	
-	def get_shopping_list(self):				
+
+	def get_shopping_list(self):
 		condition = ""
 		product_table = frappe.db.sql("""select item_code, description, rate, qty, amount, parent
-			from `tabMoney Transfer Product` 
+			from `tabMoney Transfer Product`
 			where parent = %s {0}""".format(condition), (self.mctn), as_dict=1)
-			
-		entries = sorted(list(product_table), 
+
+		entries = sorted(list(product_table),
 			key=lambda k: k['parent'])
-				
+
 		self.set('product_table', [])
 		self.total_denomination = 0.0
 

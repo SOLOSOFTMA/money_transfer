@@ -2,9 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Received Money', {
-	
+
 	setup: function(frm) {
-		
+
 		frm.get_field('deno_details').grid.editable_fields = [
 			{fieldname: 'denomination', columns: 3},
 			{fieldname: 'deno_amount', columns: 2},
@@ -16,12 +16,12 @@ frappe.ui.form.on('Received Money', {
 			{fieldname: 'description', columns: 2},
 			{fieldname: 'qty', columns: 2},
 			{fieldname: 'rate', columns: 2},
-			{fieldname: 'amount', columns: 2} 
+			{fieldname: 'amount', columns: 2}
 		];
 	},
 
 	onload: function(frm) {
-		
+
 		frappe.call({
 			"method": "frappe.client.get",
 						args: {
@@ -29,7 +29,7 @@ frappe.ui.form.on('Received Money', {
 							name: frm.doc.mctn,
 							filters: {
 								'docstatus' : 1
-							},	
+							},
 						},
 						callback: function (data) {
 								cur_frm.set_value("company", data.message["company"]);
@@ -41,7 +41,7 @@ frappe.ui.form.on('Received Money', {
 								cur_frm.set_value("sender_currency", data.message["sender_currency"]);
 								cur_frm.set_value("sender_agents", data.message["sender_agents"]);
 								cur_frm.set_value("sender_user_id", data.message["send_by"]);
-								
+
 								cur_frm.set_value("reference", data.message["reference"]);
 								cur_frm.set_value("receiver_to_country", data.message["receiver_to"]);
 								cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
@@ -60,7 +60,7 @@ frappe.ui.form.on('Received Money', {
 								cur_frm.set_value("receiver_agents_account", data.message["receiver_agent_account"]);
 								cur_frm.set_value("receiver_name", data.message["receiver_name"]);
 								cur_frm.set_value("receiver_details", data.message["receiver_details"]);
-								cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);	
+								cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);
 								cur_frm.set_value("amount_received", data.message["amount_received"]);
 								cur_frm.set_df_property("mctn", "read_only", 1);
 								cur_frm.set_df_property("purpose", "read_only", 1);
@@ -70,11 +70,13 @@ frappe.ui.form.on('Received Money', {
 								cur_frm.set_df_property("sender_name", "read_only", 1);
 								cur_frm.set_df_property("sender_details", "read_only", 1);
 								cur_frm.set_df_property("total_denomination", "read_only", 1);
-								
-							}								
+								cur_frm.set_df_property("receiver_agents_account", "read_only", 1);
+								cur_frm.set_df_property("sender_agents_account", "read_only", 1);
+
+							}
 			})
-		
-		
+
+
 		var Current_User = user;
 		if (frm.doc.docstatus != 1){
 
@@ -83,9 +85,9 @@ frappe.ui.form.on('Received Money', {
 			args: {
 				doctype:"Agents",
 				filters: {'agent_user': Current_User
-				},		
-			}, 
-			callback: function(r) { 
+				},
+			},
+			callback: function(r) {
 			frm.set_value("receiver_agents", r.message["name"]);
 			var teller = (r.message["teller_function"]);
 			if (teller != "Teller & Till"){
@@ -99,7 +101,21 @@ frappe.ui.form.on('Received Money', {
 			}
 			})
 		}
-		
+
+		if (!frm.receiver_agents_account){
+			frappe.call({
+				method:"frappe.client.get",
+				args: {
+					doctype:"Agents",
+					filters: {'agent_user': Current_User
+					},
+				},
+				callback: function(r) {
+				frm.set_value("receiver_agents_account", r.message["agent_account"]);
+				}
+				})
+			}
+
 		if (frm.doc.docstatus != 1){
 			var today = get_today()
 			var Current_User = user;
@@ -108,7 +124,7 @@ frappe.ui.form.on('Received Money', {
 
 			frm.set_query("mctn", function() {
 				return {
-					"filters": { 
+					"filters": {
 							"docstatus": ["=", 1],
 							"withdraw_status": ["!=", 1],
 							"receiver_to_location": frm.doc.user_location
@@ -116,15 +132,15 @@ frappe.ui.form.on('Received Money', {
 				};
 			});
 		}
-		
-		
+
+
 	},
 	refresh: function(frm) {
 		if (frm.doc.docstatus == 1 && frm.doc.purpose == "Shopping" && user_roles.indexOf("Sales Manager")!=-1 && !frm.doc.pickup_shopping) {
 			frm.add_custom_button(__('Shopping Update'), function() {
 				frm.set_value("pickup_shopping", 1);
 				frm.set_value("pickup_date",  get_today());
-						
+
 			});
 		}
 		if (frm.doc.docstatus != 1){
@@ -136,8 +152,8 @@ frappe.ui.form.on('Received Money', {
 							doctype:"User",
 							filters: {'email': Current_User
 							},
-						}, 
-						callback: function(r) { 
+						},
+						callback: function(r) {
 							cur_frm.set_value("received_agent_name", r.message["full_name"]);
 						}
 					})
@@ -149,12 +165,12 @@ frappe.ui.form.on('Received Money', {
 								doctype:"Agents",
 								filters: {"agent_user": Current_User
 								},
-							}, 
-							callback: function(r) { 
+							},
+							callback: function(r) {
 								cur_frm.set_value("user_location", r.message["agents_location"]);
 							}
 				})
-				
+
 		}
 
 	},
@@ -171,9 +187,9 @@ frappe.ui.form.on('Received Money', {
 
 //	mctn: function(frm) {
 //		cur_frm.set_value("sender_from", "");
-				
-			
-//	},	
+
+
+//	},
 });
 
 
@@ -202,5 +218,5 @@ frappe.ui.form.on("Deno", "denomination", function(frm, cdt, cdn){
 					frappe.model.set_value(d.doctype, d.name, "deno_amount",  data.message["denos"]);
 				}
 		})
-	
+
 });
