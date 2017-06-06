@@ -30,7 +30,7 @@ class SendMoney(Document):
 
 	
 	def get_status(self):
-		return status="Send"
+		self.transaction_status='Send'
 	
 	def get_send_by(self):
 		return self.owner
