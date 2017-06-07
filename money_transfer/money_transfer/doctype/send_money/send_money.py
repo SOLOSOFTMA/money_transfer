@@ -21,16 +21,12 @@ class SendMoney(Document):
 		self.validate_sender_details()
 		if not self.send_date:
 			self.send_date = self.posting_date
-		if not self.transaction_status:
-			self.transaction_status = self.get_status()
+		
 		if not self.title:
 			self.title = self.get_title()
 		if not self.send_by:
 			self.send_by = self.get_send_by()
 
-	
-	def get_status(self):
-		self.transaction_status='Send'
 	
 	def get_send_by(self):
 		return self.owner
@@ -46,6 +42,9 @@ class SendMoney(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
+		if not self.transaction_status:
+			frappe.db.set_value("Send Money",self.name,"transaction_status","Send")
+			self.reload()
 
 		
 	def get_title(self):
