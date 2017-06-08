@@ -42,9 +42,9 @@ class SendMoney(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
-		if not self.transaction_status:
-			frappe.db.set_value("Send Money",self.name,"transaction_status","Send")
-			self.reload()
+#		if not self.transaction_status:
+#			frappe.db.set_value("Send Money",self.name,"transaction_status","Send")
+#			self.reload()
 
 		
 	def get_title(self):
