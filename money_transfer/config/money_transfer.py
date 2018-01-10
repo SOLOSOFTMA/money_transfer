@@ -21,6 +21,8 @@ def get_data():
 					"name": "Refund",
 					"description": _("Refund."),
 				},
+
+
 			]
 		},
 		{
@@ -94,6 +96,12 @@ def get_data():
 				{
 					"type": "report",
 					"is_query_report": True,
+					"name": "Customer Credit",
+					"doctype": "Send Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
 					"name": "Tellers Report",
 					"doctype": "Send Money"
 				},
@@ -128,6 +136,12 @@ def get_data():
 					"is_query_report": True,
 					"name": "Send TT Yet to Withdraw",
 					"doctype": "Send TT"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Total By Customer Report",
+					"doctype": "Send Money"
 				},
 			]
 		},

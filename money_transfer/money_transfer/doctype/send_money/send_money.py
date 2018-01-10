@@ -11,16 +11,14 @@ from erpnext.setup.utils import get_exchange_rate
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
 
-
 class SendMoney(Document):
-	def __init__(self, arg1, arg2=None):
-		super(SendMoney, self).__init__(arg1, arg2)
 	
 	def validate(self):
 		self.validate_amount_send()
 		self.validate_sender_details()
 		if not self.send_date:
 			self.send_date = self.posting_date
+		self.clear_withdraw_status()
 		
 		if not self.title:
 			self.title = self.get_title()
@@ -30,7 +28,6 @@ class SendMoney(Document):
 	
 	def get_send_by(self):
 		return self.owner
-		
 		self.set_manual_mctn()
 			
 	
@@ -42,11 +39,16 @@ class SendMoney(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
-#		if not self.transaction_status:
-#			frappe.db.set_value("Send Money",self.name,"transaction_status","Send")
-#			self.reload()
-
 		
+		
+
+
+	def clear_withdraw_status(self):
+#		frappe.db.sql("""Update `tabSend Money` set withdraw_status=0 where mctn = %s""", self.name)
+		self.withdraw_status = 0
+#		msgprint(_("Reset Withdraw Status").format(self.withdraw_status),
+#					raise_exception=1)
+
 	def get_title(self):
 		return self.sender_name
 	
@@ -62,7 +64,6 @@ class SendMoney(Document):
 					raise_exception=1)
 		
 	def validate_sender_details(self):
-	
 		if not self.receiver_to:
 			msgprint(_("To is Manadory").format(self.purpose),
 					raise_exception=1)
@@ -107,6 +108,8 @@ class SendMoney(Document):
 					"debit": self.amount_send,
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
+					"party_type" : "Customer",
+					"party": self.sender_name,
 					"against": "Cash in Till - T&T",
 					"remarks": "Send Money Transaction"
 				}))
@@ -132,6 +135,8 @@ class SendMoney(Document):
 					"debit": flt(self.amount_send * self.exchange_rate),
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
+					"party_type" : "Customer",
+					"party": self.sender_name,
 					"against": "Cash in Till - T&T",
 					"remarks": "Send Money Transaction"
 				}))

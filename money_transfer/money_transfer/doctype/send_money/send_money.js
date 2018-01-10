@@ -239,7 +239,6 @@ frappe.ui.form.on('Send Money', {
 			cur_frm.set_value("multicurrency", 0);
 			cur_frm.set_value("exchange_rate", 1.00);
 		}
-//		}
 	},
 	levy: function(frm) {
 		if (frm.doc.levy == "Yes"){
