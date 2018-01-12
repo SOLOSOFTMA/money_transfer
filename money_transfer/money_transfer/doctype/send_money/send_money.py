@@ -39,9 +39,12 @@ class SendMoney(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
-		
-		
+		self.update_customer_info()
+	
 
+	def update_customer_info(self):
+		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.sender_name))
+		
 
 	def clear_withdraw_status(self):
 #		frappe.db.sql("""Update `tabSend Money` set withdraw_status=0 where mctn = %s""", self.name)
@@ -247,3 +250,11 @@ class SendMoney(Document):
 				})
 		doc.insert()
 		doc.submit()
+
+
+	def get_exchange_rate(self):
+		from erpnext.setup.utils import get_exchange_rate
+		exchange_rate = get_exchange_rate(self.sender_currency, self.received_currency, self.posting_date)
+
+		self.exchange_rate = exchange_rate
+#		frappe.msgprint(_("Exchange rate for {0} to {1} for key date {2} is {3}.").format(self.sender_currency, self.received_currency, self.posting_date, exchange_rate))

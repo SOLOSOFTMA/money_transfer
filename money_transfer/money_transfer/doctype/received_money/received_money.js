@@ -53,13 +53,22 @@ frappe.ui.form.on('Received Money', {
 								cur_frm.set_value("fees_amount", data.message["fees_amount"]);
 								cur_frm.set_value("total_amount_paid", data.message["total_amount_paid"]);
 								cur_frm.set_value("sender_name", data.message["sender_name"]);
-								cur_frm.set_value("sender_id_type", data.message["sender_id_type"]);
-								cur_frm.set_value("sender_id_no", data.message["sender_id_no"]);
-								cur_frm.set_value("sender_details", data.message["sender_details"]);
 								cur_frm.set_value("sender_agents_account", data.message["sender_agents_account"]);
 								cur_frm.set_value("receiver_agents_account", data.message["receiver_agent_account"]);
 								cur_frm.set_value("receiver_name", data.message["receiver_name"]);
-								cur_frm.set_value("receiver_details", data.message["receiver_details"]);
+									frappe.call({
+										method:"frappe.client.get",
+										args: {
+											doctype:"Customer",
+											filters: {'customer_name': data.message["receiver_name"]
+											},
+										},
+										callback: function(r) {
+											cur_frm.set_value("receiver_id_type", r.message["customer_id_type"]);
+											cur_frm.set_value("receiver_id_no", r.message["customer_id_no"]);
+											cur_frm.set_value("receiver_details", r.message["customer_details"]);
+										}
+									})
 								cur_frm.set_value("received_agent_name", data.message["send_agent_name"]);
 								cur_frm.set_value("amount_received", data.message["amount_received"]);
 								cur_frm.set_df_property("mctn", "read_only", 1);
@@ -75,7 +84,7 @@ frappe.ui.form.on('Received Money', {
 
 							}
 			})
-
+	
 
 		var Current_User = user;
 		if (frm.doc.docstatus != 1){
@@ -135,6 +144,8 @@ frappe.ui.form.on('Received Money', {
 
 
 	},
+
+	
 	refresh: function(frm) {
 		if (frm.doc.docstatus == 1 && frm.doc.purpose == "Shopping" && user_roles.indexOf("Sales Manager")!=-1 && !frm.doc.pickup_shopping) {
 			frm.add_custom_button(__('Shopping Update'), function() {

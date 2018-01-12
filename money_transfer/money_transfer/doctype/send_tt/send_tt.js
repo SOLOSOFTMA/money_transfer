@@ -36,7 +36,8 @@ frappe.ui.form.on('Send TT', {
 		frm.set_query("receiver_to_location", function() {
 			return {
 				"filters": { "country": ["=", frm.doc.receiver_to],
-							"City" : ["!=", frm.doc.sender_from_location]}
+//							"City" : ["!=", frm.doc.sender_from_location]
+						}
 			};
 		});		
 		var Current_User = user;
@@ -69,7 +70,12 @@ frappe.ui.form.on('Send TT', {
 	},
 	
 	amount_send: function(frm) {
-		frm.set_value("amount_received", (Math.floor(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+		
+		if (frm.doc.check_special_rate == 1){
+			frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.special_rate) * 20)/20));
+		} else if (frm.doc.check_special_rate == 0){
+			frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+		}
 		calculate_total_amount(frm);
 	},
 		
@@ -145,7 +151,7 @@ frappe.ui.form.on('Send TT', {
 			"method": "frappe.client.get",
 			args: {
 					doctype: "Location",
-					filters: {'City': frm.doc.receiver_to_location
+					filters: {'name': frm.doc.receiver_to_location
 								},
 				},
 					callback: function (data) {
@@ -167,19 +173,13 @@ frappe.ui.form.on('Send TT', {
 		});
 		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
 			frm.set_value("multicurrency", 1);
-				frappe.call({
-						"method": "frappe.client.get",
-						args: {
-							doctype: "Currency Exchange",
-							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
-									  'from_currency': frm.doc.sender_currency,
-									  'to_currency': frm.doc.received_currency},
-						},
-						callback: function (data) {
-							
-							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
+			frappe.call({
+				method : "get_exchange_rate",
+				doc: frm.doc,
+				callback: function(data) {
+					frm.refresh_fields("exchange_rate");
 				}
-				});
+		});
 			
 		}else {
 			frm.set_value("multicurrency", 0);
@@ -199,16 +199,18 @@ frappe.ui.form.on('Send TT', {
 	}
 	
 });
+	cur_frm.add_fetch('sender_name','customer_id_type','sender_id_type');
+	cur_frm.add_fetch('sender_name','customer_id_no','sender_id_no');
+	cur_frm.add_fetch('sender_name','customer_details','sender_details');
+	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
 
 	cur_frm.add_fetch('sender_from','agents_country','sender_from_country');
 	cur_frm.add_fetch('sender_from','agents_location','sender_from_location');
 	cur_frm.add_fetch('sender_from','agents_currency','sender_currency');
 	cur_frm.add_fetch('sender_from','agents_city_code','sender_city_code');
-	cur_frm.add_fetch('sender_name','customer_details','sender_details');
 	cur_frm.add_fetch('sender_from','agent_account','sender_agents_account');
 	cur_frm.add_fetch('sender_from','agent_fees_account','sender_fees_account');
 	cur_frm.add_fetch('sender_from','agent_name','send_agent_name');
-	cur_frm.add_fetch('sender_name','customer_details','sender_details');
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
 	cur_frm.add_fetch('person_lodge_application','customer_details','person_lodge_app_details');

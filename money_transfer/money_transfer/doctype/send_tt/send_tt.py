@@ -11,8 +11,6 @@ from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
 
 class SendTT(Document):
-	def __init__(self, arg1, arg2=None):
-		super(SendTT, self).__init__(arg1, arg2)
 	
 	def validate(self):
 		self.validate_sender_details()
@@ -24,6 +22,7 @@ class SendTT(Document):
 			self.title = self.get_title()
 		if not self.send_by:
 			self.send_by = self.get_send_by()
+		self.clear_withdraw_status()
 	
 	def get_send_by(self):
 		return self.owner
@@ -31,8 +30,14 @@ class SendTT(Document):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.make_trxn_entries()
-		
+		self.update_customer_info()
 	
+	def update_customer_info(self):
+		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.sender_name))
+	
+	def clear_withdraw_status(self):
+		self.withdraw_status = 0
+
 	def del_transactions(self):
 		frappe.db.sql("""Update `tabTransactions Details` set docstatus=2 where mctn = %s""", self.name)
 		
@@ -223,3 +228,9 @@ class SendTT(Document):
 				})
 		doc.insert()
 		doc.submit()
+	
+	def get_exchange_rate(self):
+		from erpnext.setup.utils import get_exchange_rate
+		exchange_rate = get_exchange_rate(self.sender_currency, self.received_currency, self.posting_date)
+
+		self.exchange_rate = exchange_rate

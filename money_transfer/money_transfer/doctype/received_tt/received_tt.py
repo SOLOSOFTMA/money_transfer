@@ -34,6 +34,12 @@ class ReceivedTT(Document):
 		self.make_gl_entries()
 		self.make_trxn_entries()
 		self.update_tabSend_Received_Status()
+		self.update_customer_info()
+	
+
+	def update_customer_info(self):
+		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.sender_name))
+		
 	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries
