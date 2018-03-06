@@ -151,6 +151,23 @@ def get_data():
 			]
 		},
 		{
+			"label": _("NZ Reporting"),
+			"items": [
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "NZ Customer Summary Report - Send Money",
+					"doctype": "Send Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "NZ Customer Summary Report - Send TT",
+					"doctype": "Send TT"
+				},
+			]
+		},
+		{
 			"label": _("OET"),
 			"items": [
 				{

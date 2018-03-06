@@ -15,7 +15,11 @@ frappe.ui.form.on('Send Money', {
 
 	onload: function(frm) {
 			
-//		if (frm.doc.workflow_state != "UnAuthorised"){
+		if (frappe.user.has_role("Sales Master Manager")){
+			cur_frm.set_df_property("confirm_deposit", "hidden", false);
+		} else{
+			cur_frm.set_df_property("confirm_deposit", "hidden", true);	
+		}
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
 		  frm.set_value("posting_date", today);
@@ -79,7 +83,7 @@ frappe.ui.form.on('Send Money', {
 								});
 								}
 							
-						  if (frm.doc.withdraw_status != 1 && frm.doc.docstatus == 1 && frm.doc.receiver_to_location == user_location) {
+						  if (frm.doc.withdraw_status != 1 && frm.doc.docstatus == 1 && frm.doc.receiver_to_location == user_location && frm.doc.confirm_deposit == "Confirm") {
 							 frm.add_custom_button(__('Withdraw'), function() {
 							 frappe.route_options = {
 												"mctn": frm.doc.name
@@ -275,6 +279,9 @@ frappe.ui.form.on('Send Money', {
 	cur_frm.add_fetch('sender_name','customer_id_type','sender_id_type');
 	cur_frm.add_fetch('sender_name','customer_id_no','sender_id_no');
 	cur_frm.add_fetch('sender_name','customer_details','sender_details');
+	cur_frm.add_fetch('sender_name','customer_id_1','customer_id_1');
+	cur_frm.add_fetch('sender_name','customer_id_2','customer_id_2');
+	cur_frm.add_fetch('sender_name','customer_id_3','customer_id_3');
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
 
 	cur_frm.add_fetch('sender_from','agents_country','sender_from_country');

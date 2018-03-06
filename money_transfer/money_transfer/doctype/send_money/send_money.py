@@ -43,7 +43,7 @@ class SendMoney(Document):
 	
 
 	def update_customer_info(self):
-		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.sender_name))
+		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s, customer_id_1 = %s, customer_id_2 = %s, customer_id_3 = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.customer_id_1, self.customer_id_2, self.customer_id_3, self.sender_name))
 		
 
 	def clear_withdraw_status(self):
@@ -96,6 +96,7 @@ class SendMoney(Document):
 	def del_transactions(self):
 		frappe.db.sql("""Update `tabTransactions Details` set docstatus=2 where mctn = %s""", self.name)
 		frappe.db.sql("""Update `tabTransactions History` set docstatus=2 where mctn = %s""", self.name)
+		
 	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries	
