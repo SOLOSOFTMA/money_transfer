@@ -2925,12 +2925,8 @@
  "is_submittable": 1, 
  "issingle": 0, 
  "istable": 0, 
- "max_attachments": 0, 
-<<<<<<< HEAD
- "modified": "2017-12-20 11:48:48.173651", 
-=======
- "modified": "2018-02-11 08:11:21.672133", 
->>>>>>> 75afba722eea668e49edee76ab3c6a01c7d7bc6e
+ "max_attachments": 0,
+ "modified": "2018-02-11 08:11:21.672133",
  "modified_by": "Administrator", 
  "module": "Money Transfer", 
  "name": "Send Money", 
