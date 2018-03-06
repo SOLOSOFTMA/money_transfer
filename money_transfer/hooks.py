@@ -4,7 +4,7 @@ from . import __version__ as app_version
 
 app_name = "money_transfer"
 app_title = "Money Transfer"
-app_publisher = "Caitlah Technology"
+app_publisher = "Sione Taumoepeau"
 app_description = "App for Money Transfer Services"
 app_icon = "octicon octicon-markdown"
 app_color = "red"

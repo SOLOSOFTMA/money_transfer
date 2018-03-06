@@ -15,7 +15,11 @@ frappe.ui.form.on('Send Money', {
 
 	onload: function(frm) {
 			
-//		if (frm.doc.workflow_state != "UnAuthorised"){
+		if (frappe.user.has_role("Sales Master Manager")){
+			cur_frm.set_df_property("confirm_deposit", "hidden", false);
+		} else{
+			cur_frm.set_df_property("confirm_deposit", "hidden", true);	
+		}
 		if (frm.doc.docstatus != 1){
 		  var today = get_today()
 		  frm.set_value("posting_date", today);
@@ -46,6 +50,7 @@ frappe.ui.form.on('Send Money', {
 									cur_frm.set_value("sender_agents_account", data.message["agent_account"]);
 									cur_frm.set_value("sender_fees_account", data.message["agent_fees_account"]);
 									cur_frm.set_value("sender_cost_center", data.message["agent_cost_center"]);
+									cur_frm.set_value("received_currency", "");
 						}
 				})
 			} 
@@ -78,7 +83,7 @@ frappe.ui.form.on('Send Money', {
 								});
 								}
 							
-						  if (frm.doc.withdraw_status != 1 && frm.doc.docstatus == 1 && frm.doc.receiver_to_location == user_location) {
+						  if (frm.doc.withdraw_status != 1 && frm.doc.docstatus == 1 && frm.doc.receiver_to_location == user_location && frm.doc.confirm_deposit == "Confirm") {
 							 frm.add_custom_button(__('Withdraw'), function() {
 							 frappe.route_options = {
 												"mctn": frm.doc.name
@@ -113,9 +118,17 @@ frappe.ui.form.on('Send Money', {
 	
 	amount_send: function(frm) {
 		if (frm.doc.received_currency != "TOP"){
-			frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 5)/5));
+			if (frm.doc.check_special_rate == 1){
+				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.special_rate) * 5)/5));
+			} else if (frm.doc.check_special_rate == 0){
+				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 5)/5));
+			}
 		}if (frm.doc.received_currency == "TOP"){
-			frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+			if (frm.doc.check_special_rate == 1){
+				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.special_rate) * 20)/20));
+			} else if (frm.doc.check_special_rate == 0){
+				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+			}
 		}
 		calculate_total_amount(frm);
 	},
@@ -170,9 +183,9 @@ frappe.ui.form.on('Send Money', {
 	},
 	
 	receiver_to: function(frm) {
-		if (frm.doc.receiver_to == ""){
+		if (frm.doc.receiver_to==null){
+			cur_frm.set_value("received_currency", null);
 			frappe.msgprint(__("Please select where you send Money to"))
-			return;
 		}
 		frappe.call({
 			"method": "frappe.client.get",
@@ -217,29 +230,34 @@ frappe.ui.form.on('Send Money', {
 		});
 		if (frm.doc.sender_from_country != frm.doc.receiver_to) {
 			var today = get_today();
-			
 			frm.set_value("multicurrency", 1);
 				frappe.call({
-						"method": "frappe.client.get",
-						args: {
-							doctype: "Currency Exchange",
-							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
-									  'from_currency': frm.doc.sender_currency,
-									  'to_currency': frm.doc.received_currency
-									  }
-									  },
-									  
-						callback: function (data) {
-							
-							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-				}
+						method : "get_exchange_rate",
+						doc: frm.doc,
+						callback: function(data) {
+						//	cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
+						frm.refresh_fields("exchange_rate");
+						}
+						
 				});
+//				frappe.call({
+//						"method": "frappe.client.get",
+//						args: {
+//							doctype: "Currency Exchange",
+//							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
+//									  'from_currency': frm.doc.sender_currency,
+//									  'to_currency': frm.doc.received_currency
+//									  }
+//									  },									  
+//						callback: function (data) {						
+//							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
+//				}
+//				});
 			
 		}else {
 			cur_frm.set_value("multicurrency", 0);
 			cur_frm.set_value("exchange_rate", 1.00);
 		}
-//		}
 	},
 	levy: function(frm) {
 		if (frm.doc.levy == "Yes"){
@@ -251,20 +269,29 @@ frappe.ui.form.on('Send Money', {
 		}else if (frm.doc.levy == ""){
 			frm.set_value("govt_levy", "");
 		}
+	},
+	sender_name: function(frm){
+
 	}
 	
 });
 
-	
+	cur_frm.add_fetch('sender_name','customer_id_type','sender_id_type');
+	cur_frm.add_fetch('sender_name','customer_id_no','sender_id_no');
+	cur_frm.add_fetch('sender_name','customer_details','sender_details');
+	cur_frm.add_fetch('sender_name','customer_id_1','customer_id_1');
+	cur_frm.add_fetch('sender_name','customer_id_2','customer_id_2');
+	cur_frm.add_fetch('sender_name','customer_id_3','customer_id_3');
+	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
+
 	cur_frm.add_fetch('sender_from','agents_country','sender_from_country');
 	cur_frm.add_fetch('sender_from','agents_location','sender_from_location');
 	cur_frm.add_fetch('sender_from','agents_currency','sender_currency');
 	cur_frm.add_fetch('sender_from','agents_city_code','sender_city_code');
-	cur_frm.add_fetch('sender_name','customer_details','sender_details');
+	
 	cur_frm.add_fetch('sender_from','agent_account','sender_agents_account');
 	cur_frm.add_fetch('sender_from','agent_fees_account','sender_fees_account');
 	cur_frm.add_fetch('sender_from','agent_name','send_agent_name');
-	cur_frm.add_fetch('sender_name','customer_details','sender_details');
 	cur_frm.add_fetch('receiver_name','customer_details','receiver_details');
 	cur_frm.add_fetch('sender_from','agent_cost_center','sender_cost_center');
 

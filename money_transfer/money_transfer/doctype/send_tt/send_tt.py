@@ -11,8 +11,6 @@ from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
 
 class SendTT(Document):
-	def __init__(self, arg1, arg2=None):
-		super(SendTT, self).__init__(arg1, arg2)
 	
 	def validate(self):
 		self.validate_sender_details()
@@ -24,15 +22,29 @@ class SendTT(Document):
 			self.title = self.get_title()
 		if not self.send_by:
 			self.send_by = self.get_send_by()
+		self.clear_withdraw_status()
 	
 	def get_send_by(self):
 		return self.owner
 					
 	def on_submit(self):
-		self.make_gl_entries()
+#		self.make_gl_entries()
+		
 		self.make_trxn_entries()
+		self.update_customer_info()
+		self.check_payment()
+#		self.create_sales_invoices()
+
+	def update_customer_info(self):
+		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s, customer_id_1 = %s, customer_id_2 = %s, customer_id_3 = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.customer_id_1, self.customer_id_2, self.customer_id_3, self.sender_name))
 		
 	
+#	def update_customer_info(self):
+#		frappe.db.sql("""Update `tabCustomer` set customer_details = %s, customer_id_type =%s, customer_id_no = %s where customer_name = %s""", (self.sender_details, self.sender_id_type, self.sender_id_no, self.sender_name))
+	
+	def clear_withdraw_status(self):
+		self.withdraw_status = 0
+
 	def del_transactions(self):
 		frappe.db.sql("""Update `tabTransactions Details` set docstatus=2 where mctn = %s""", self.name)
 		
@@ -60,16 +72,19 @@ class SendTT(Document):
 		self.make_gl_entries(1)
 		self.del_transactions()
 	
+	def check_payment(self):
+
+		if self.payment_method == "CREDIT":
+			self.create_sales_invoices()
+			
+		if self.payment_method != "CREDIT":
+			self.make_gl_entries()
+	
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries		
 		gl_map = []
 		
-		if self.payment_method == "CREDIT":
-			Account = "Debtors - T&T"
-			
-		if self.payment_method != "CREDIT":
-			Account = "Cash in Till - T&T"
-			
+		Account = "Cash in Till - T&T"
 		
 		if self.sender_currency == "TOP":
 			gl_map.append(
@@ -209,8 +224,7 @@ class SendTT(Document):
 			
 		if gl_map:
 			make_gl_entries(gl_map, cancel=(self.docstatus == 2))
-		
-			
+					
 	def make_trxn_entries(self):
 		doc = frappe.new_doc("Transactions Details")
 		doc.update({
@@ -223,3 +237,39 @@ class SendTT(Document):
 				})
 		doc.insert()
 		doc.submit()
+	
+	def get_exchange_rate(self):
+		from erpnext.setup.utils import get_exchange_rate
+
+		if not self.option_send_to_country and not self.option_send_to_currency:
+			exchange_rate = get_exchange_rate(self.sender_currency, self.received_currency, self.posting_date)
+
+		if self.option_send_to_country and self.option_send_to_currency:
+			exchange_rate = get_exchange_rate(self.sender_currency, self.option_send_to_currency, self.posting_date)
+
+		self.exchange_rate = exchange_rate
+	
+
+	def create_sales_invoices(self):
+		
+		doc = frappe.new_doc("Sales Invoice")
+		doc.customer = self.sender_name
+		doc.ref = self.name
+		
+		item = doc.append('items', {
+		'item_code' : "Send TT",
+		'item_name' : "Send TT",
+		'qty' : 1,
+		'rate' : self.total_amount_paid
+		})
+		
+
+		
+		doc.save(ignore_permissions=True)
+		doc.save()
+		doc.submit()
+
+#@frappe.whitelist()
+#def get_mode_of_payment(doc):
+#	return frappe.db.sql(""" select mpa.default_account, mpa.parent, mp.type as type from `tabMode of Payment Account` mpa,
+#		 `tabMode of Payment` mp where mpa.parent = mp.name and mpa.company = %(company)s""", {'company': doc.company}, as_dict=1)

@@ -21,6 +21,8 @@ def get_data():
 					"name": "Refund",
 					"description": _("Refund."),
 				},
+
+
 			]
 		},
 		{
@@ -63,6 +65,11 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
+					"name": "Customer",
+					"description": _("Customer database."),
+				},
+				{
+					"type": "doctype",
 					"name": "Agents",
 					"description": _("Agents."),
 				},
@@ -91,6 +98,12 @@ def get_data():
 		{
 			"label": _("Reports"),
 			"items": [
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Customer Credit",
+					"doctype": "Send Money"
+				},
 				{
 					"type": "report",
 					"is_query_report": True,
@@ -127,6 +140,29 @@ def get_data():
 					"type": "report",
 					"is_query_report": True,
 					"name": "Send TT Yet to Withdraw",
+					"doctype": "Send TT"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "Total By Customer Report",
+					"doctype": "Send Money"
+				},
+			]
+		},
+		{
+			"label": _("NZ Reporting"),
+			"items": [
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "NZ Customer Summary Report - Send Money",
+					"doctype": "Send Money"
+				},
+				{
+					"type": "report",
+					"is_query_report": True,
+					"name": "NZ Customer Summary Report - Send TT",
 					"doctype": "Send TT"
 				},
 			]
