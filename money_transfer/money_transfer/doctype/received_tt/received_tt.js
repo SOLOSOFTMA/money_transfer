@@ -25,7 +25,20 @@ frappe.ui.form.on('Received TT', {
 							cur_frm.set_value("company", data.message["company"]);
 							cur_frm.set_value("multicurrency", data.message["multicurrency"]);
 							cur_frm.set_value("purpose", data.message["purpose"]);
-							cur_frm.set_value("sender_from", data.message["sender_from"]);
+							frappe.call({
+								method:"frappe.client.get",
+									args: {
+											doctype:"Agents",
+											filters: {"agent_user": data.message["owner"]
+											},
+										}, 
+										callback: function(d) { 
+											cur_frm.set_value("sender_from", d.message["name"]);
+											
+
+										}
+							})
+							
 							cur_frm.set_value("sender_from_country", data.message["sender_from_country"]);
 							cur_frm.set_value("sender_from_location", data.message["sender_from_location"]);
 							cur_frm.set_value("sender_currency", data.message["sender_currency"]);
@@ -33,7 +46,7 @@ frappe.ui.form.on('Received TT', {
 							
 							cur_frm.set_value("receiver_to", data.message["receiver_to"]);
 							cur_frm.set_value("receiver_to_location", data.message["receiver_to_location"]);
-							cur_frm.set_value("received_currency", data.message["received_currency"]);
+//							cur_frm.set_value("received_currency", data.message["received_currency"]);
 						
 							cur_frm.set_value("amount_send", data.message["amount_send"]);
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
@@ -47,7 +60,18 @@ frappe.ui.form.on('Received TT', {
 							cur_frm.set_value("sender_id_no", data.message["sender_id_no"]);
 							cur_frm.set_value("sender_details", data.message["sender_details"]);
 							cur_frm.set_value("sender_agents_account", data.message["sender_agents_account"]);
-							cur_frm.set_value("receiver_agents_account", data.message["receiver_agent_account"]);
+							frappe.call({
+								method:"frappe.client.get",
+									args: {
+											doctype:"Agents",
+											filters: {"agent_user": frm.doc.owner
+											},
+										}, 
+										callback: function(d) { 
+											cur_frm.set_value("receiver_agents_account", d.message["agent_account"]);
+											cur_frm.set_value("received_currency", d.message["agents_currency"]);
+										}
+							})							
 							cur_frm.set_value("receiver_name", data.message["receiver_name"]);
 							frappe.call({
 								method:"frappe.client.get",

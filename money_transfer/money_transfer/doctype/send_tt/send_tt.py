@@ -254,7 +254,7 @@ class SendTT(Document):
 		
 		doc = frappe.new_doc("Sales Invoice")
 		doc.customer = self.sender_name
-		doc.ref = self.name
+		doc.ref_tt = self.name
 		
 		item = doc.append('items', {
 		'item_code' : "Send TT",

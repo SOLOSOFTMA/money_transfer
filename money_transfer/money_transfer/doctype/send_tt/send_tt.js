@@ -158,19 +158,7 @@ frappe.ui.form.on('Send TT', {
 	},
 	receiver_to_location: function(frm) {
 		
-		frappe.call({
-			"method": "frappe.client.get",
-			args: {
-					doctype: "Location",
-					filters: {'name': frm.doc.receiver_to_location
-								},
-				},
-					callback: function (data) {
-					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
-						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
-						frm.set_value("naming_series", MTCN_Value + "-" + "TT" + "-");
-				}
-		});
+
 		frappe.call({
 			"method": "frappe.client.get",
 			args: {
@@ -197,6 +185,19 @@ frappe.ui.form.on('Send TT', {
 			frm.set_value("multicurrency", 0);
 			cur_frm.set_value("exchange_rate", 1.00);
 		}
+		frappe.call({
+			"method": "frappe.client.get",
+			args: {
+					doctype: "Location",
+					filters: {'name': frm.doc.receiver_to_location
+								},
+				},
+					callback: function (data) {
+					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
+						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
+						frm.set_value("naming_series", MTCN_Value + "-" + "TT" + "-");
+				}
+		});
 	},
 	levy: function(frm) {
 		if (frm.doc.levy == "Yes"){

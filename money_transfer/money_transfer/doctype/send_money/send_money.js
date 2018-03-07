@@ -204,19 +204,8 @@ frappe.ui.form.on('Send Money', {
 	},
 	receiver_to_location: function(frm) {
 
-		frappe.call({
-			"method": "frappe.client.get",
-			args: {
-					doctype: "Location",
-					filters: {'City': frm.doc.receiver_to_location
-								},
-				},
-					callback: function (data) {
-					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
-						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
-						frm.set_value("naming_series", MTCN_Value + "-");
-				}
-		});
+		
+
 		frappe.call({
 			"method": "frappe.client.get",
 			args: {
@@ -237,27 +226,27 @@ frappe.ui.form.on('Send Money', {
 						callback: function(data) {
 						//	cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
 						frm.refresh_fields("exchange_rate");
-						}
-						
+						}	
 				});
-//				frappe.call({
-//						"method": "frappe.client.get",
-//						args: {
-//							doctype: "Currency Exchange",
-//							filters: {'name': frm.doc.sender_currency + "-" + frm.doc.received_currency,
-//									  'from_currency': frm.doc.sender_currency,
-//									  'to_currency': frm.doc.received_currency
-//									  }
-//									  },									  
-//						callback: function (data) {						
-//							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-//				}
-//				});
 			
 		}else {
 			cur_frm.set_value("multicurrency", 0);
 			cur_frm.set_value("exchange_rate", 1.00);
 		}
+		
+		frappe.call({
+			"method": "frappe.client.get",
+			args: {
+					doctype: "Location",
+					filters: {'City': frm.doc.receiver_to_location
+								},
+				},
+					callback: function (data) {
+					cur_frm.set_value("receiver_city_code", data.message["city_code"]);
+						var MTCN_Value = "" + frm.doc.sender_city_code + frm.doc.receiver_city_code + "";
+						frm.set_value("naming_series", MTCN_Value + "-");
+				}
+		});
 	},
 	levy: function(frm) {
 		if (frm.doc.levy == "Yes"){

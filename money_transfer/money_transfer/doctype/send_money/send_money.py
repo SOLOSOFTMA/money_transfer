@@ -24,7 +24,7 @@ class SendMoney(Document):
 			self.title = self.get_title()
 		if not self.send_by:
 			self.send_by = self.get_send_by()
-
+		
 	
 	def get_send_by(self):
 		return self.owner
