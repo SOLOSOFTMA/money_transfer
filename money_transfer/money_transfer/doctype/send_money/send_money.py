@@ -40,6 +40,7 @@ class SendMoney(Document):
 		self.make_gl_entries()
 		self.make_trxn_entries()
 		self.update_customer_info()
+		self.validate_amount_recieved()
 	
 
 	def update_customer_info(self):
@@ -54,6 +55,13 @@ class SendMoney(Document):
 
 	def get_title(self):
 		return self.sender_name
+	
+	def validate_amount_recieved(self):
+		if not self.amount_received:
+			if self.multicurrency == 1:
+				self.amount_recieved == self.amount_send
+			if self.multicurrency != 1
+				self.amount_received == self.amount_send * self.exchange_rate
 	
 	def validate_amount_send(self):
 		if not self.amount_send:
