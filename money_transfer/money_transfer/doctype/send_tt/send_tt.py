@@ -242,7 +242,7 @@ class SendTT(Document):
 		from erpnext.setup.utils import get_exchange_rate
 
 		if not self.option_send_to_country and not self.option_send_to_currency:
-			exchange_rate = get_exchange_rate(self.sender_currency, self.received_currency, self.posting_date)
+			exchange_rate = get_exchange_rate(self.sender_currency, self.receive_currency, self.posting_date)
 
 		if self.option_send_to_country and self.option_send_to_currency:
 			exchange_rate = get_exchange_rate(self.sender_currency, self.option_send_to_currency, self.posting_date)

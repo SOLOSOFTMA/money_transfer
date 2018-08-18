@@ -27,7 +27,7 @@ frappe.ui.form.on('Send TT', {
 					cur_frm.set_value("sender_agents_account", data.message["agent_account"]);
 					cur_frm.set_value("sender_fees_account", data.message["agent_fees_account"]);
 					cur_frm.set_value("sender_cost_center", data.message["agent_cost_center"]);
-					cur_frm.set_value("received_currency", "");
+					cur_frm.set_value("receive_currency", "");
 					cur_frm.set_value("option_send_to_country", "");
 					cur_frm.set_value("option_send_to_currency", "");
 
@@ -81,9 +81,9 @@ frappe.ui.form.on('Send TT', {
 	amount_send: function(frm) {
 		
 		if (frm.doc.check_special_rate == 1){
-			frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.special_rate) * 20)/20));
+			frm.set_value("amount_receive", (Math.ceil(flt(frm.doc.amount_send * frm.doc.special_rate) * 20)/20));
 		} else if (frm.doc.check_special_rate == 0){
-			frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
+			frm.set_value("amount_receive", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
 		}
 		calculate_total_amount(frm);
 	},
@@ -138,7 +138,7 @@ frappe.ui.form.on('Send TT', {
 	},
 	receiver_to: function(frm) {
 		if (frm.doc.receiver_to==null){
-			cur_frm.set_value("received_currency", null);
+			cur_frm.set_value("receive_currency", null);
 			frappe.msgprint(__("Please select where you send Money to"))
 		}
 		frappe.call({
@@ -150,7 +150,7 @@ frappe.ui.form.on('Send TT', {
 						},
 				},
 					callback: function (data) {
-					cur_frm.set_value("received_currency", data.message["currency"]);
+					cur_frm.set_value("receive_currency", data.message["currency"]);
 				}
 		});
 		
