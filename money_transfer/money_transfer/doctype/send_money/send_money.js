@@ -124,11 +124,9 @@ frappe.ui.form.on('Send Money', {
 				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 5)/5));
 			}
 		}if (frm.doc.received_currency == "TOP"){
-			if (frm.doc.check_special_rate == 1){
-				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.special_rate) * 20)/20));
-			} else if (frm.doc.check_special_rate == 0){
-				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
-			}
+			
+				frm.set_value("amount_received", frm.doc.amount_send);
+			
 		}
 		calculate_total_amount(frm);
 	},

@@ -58,10 +58,13 @@ class SendMoney(Document):
 	
 	def validate_amount_recieved(self):
 		if not self.amount_received:
+			if self.multicurrency != 1:
+				self.amount_recieved == self.get_amount()
 			if self.multicurrency == 1:
-				self.amount_recieved == self.amount_send
-			if self.multicurrency != 1
 				self.amount_received == self.amount_send * self.exchange_rate
+	
+	def get_amount(self):
+		return self.amount_send
 	
 	def validate_amount_send(self):
 		if not self.amount_send:
