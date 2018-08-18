@@ -122,8 +122,8 @@
 		 <div class="panel-heading">Amount Received Details</div>
 		   <div class="panel-body">
    {%- for label, value in (
-        (_("Currency"), doc.received_currency),
-		(_("Amount Received"), doc.amount_received)
+        (_("Currency"), doc.receive_currency),
+		(_("Amount Received"), doc.amount_receive)
     ) -%}
 	<div class="row">
 			<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>
@@ -140,7 +140,7 @@
    {%- for label, value in (
 	   	(_("Country"), doc.option_send_to_country),
         (_("Currency"), doc.option_send_to_currency),
-		(_("Amount Received"), doc.amount_received)
+		(_("Amount Received"), doc.amount_receive)
     ) -%}
 	<div class="row">
 			<div class="col-xs-6"><label class="text-right">{{ label }}</label></div>

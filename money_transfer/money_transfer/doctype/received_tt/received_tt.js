@@ -50,7 +50,7 @@ frappe.ui.form.on('Received TT', {
 						
 							cur_frm.set_value("amount_send", data.message["amount_send"]);
 							cur_frm.set_value("exchange_rate", data.message["exchange_rate"]);
-							cur_frm.set_value("amount_received", data.message["amount_received"]);
+							cur_frm.set_value("amount_received", data.message["amount_receive"]);
 							cur_frm.set_value("fees", data.message["fees"]);
 							cur_frm.set_value("fees_amount", data.message["fees_amount"]);
 							cur_frm.set_value("total_amount_paid", data.message["total_amount_paid"]);
