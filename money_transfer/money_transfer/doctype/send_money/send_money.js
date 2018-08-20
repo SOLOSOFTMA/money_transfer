@@ -88,8 +88,8 @@ frappe.ui.form.on('Send Money', {
 							 frappe.route_options = {
 												"mctn": frm.doc.name
 												}
-							frappe.new_doc("receive Money");
-							frappe.set_route("Form", "receive Money", doc.name);
+							frappe.new_doc("Received Money");
+							frappe.set_route("Form", "Received Money", doc.name);
 							});
 							}	
 						}
