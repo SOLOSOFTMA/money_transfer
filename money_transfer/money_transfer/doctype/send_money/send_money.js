@@ -131,9 +131,10 @@ frappe.ui.form.on('Send Money', {
 				frm.set_value("amount_received", (Math.ceil(flt(frm.doc.amount_send * frm.doc.exchange_rate) * 20)/20));
 			}
 		}
-		if (frm.doc.sender_currency == "TOP" && frm.doc.received_currency == "TOP"){
-							frm.set_value("amount_received", frm.doc.amount_send);
-				}
+		
+		if (frm.doc.sender_currency == frm.doc.received_currency){
+					frm.set_value("amount_received", frm.doc.amount_send);
+		}
 			
 		
 		calculate_total_amount(frm);
