@@ -37,7 +37,7 @@ class SendMoney(Document):
 					raise_exception=1)
 					
 	def on_submit(self):
-		self.make_gl_entries()
+#		self.make_gl_entries()
 		self.make_trxn_entries()
 		self.update_customer_info()
 		self.validate_amount_recieved()
@@ -258,6 +258,7 @@ class SendMoney(Document):
 					"currency": self.sender_currency,
 					"description": self.doctype,
 					"inflow": self.total_amount_paid,
+					"exchange_rate": self.exchange_rate,
 					"mctn": self.name
 				})
 		doc.insert()
